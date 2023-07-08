@@ -5,10 +5,10 @@ import getCurrentUser from "../../actions/getCurrentUser";
 import {getUserAndOrders} from "../../actions/getUserAndOrders";
 const HOME = async () => {
 
-   const {user, orders} = await getUserAndOrders();
+   const data = await getUserAndOrders();
 
    return (
-       <ClientOrders currentUser={user} userOrders={orders}/>
+       <ClientOrders currentUser={data?.user} userOrders={data?.orders}/>
    )
 };
 
