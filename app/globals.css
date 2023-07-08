@@ -2,26 +2,132 @@
 @tailwind components;
 @tailwind utilities;
 
+
 :root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
+  --font-mono: ui-monospace, Menlo, Monaco, 'Cascadia Mono', 'Segoe UI Mono',
+  'Roboto Mono', 'Oxygen Mono', 'Ubuntu Monospace', 'Source Code Pro',
+  'Fira Mono', 'Droid Sans Mono', 'Courier New', monospace;
+
+}
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-  }
+html,
+body {
+  width: 100vw;
+  overflow-x: hidden;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  position: relative;
 }
 
 body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+  color: black;
+}
+hr {
+  border-top-width: 0;
+}
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.burgerBlockingLayer {
+  background-color: hsla(0,0%,7%,.36);
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+}
+
+.headerSvg {
+  @apply cursor-pointer relative z-10 mobile:z-0  after:transition-opacity after:ease-in-out after:duration-200 after:z-0 after:rounded-full after:opacity-0 hover:after:opacity-10 after:absolute after:h-[150%] after:w-[150%]  after:bg-gray-500 after:-top-[6px] after:-left-[6px]
+}
+.headerLinks {
+  @apply cursor-pointer relative after:absolute after:bg-black after:left-[50%] after:h-[2px] after:w-[10%] after:transition-all after:duration-200  after:-bottom-1 hover:after:-left-1 after:opacity-0 hover:after:opacity-100 hover:after:w-[120%]
+}
+.headerBurgerLine {
+  @apply h-[2px] bg-black rounded-md transition-all duration-300
+}
+.headerBurgerLink {
+  @apply flex items-center cursor-pointer
+}
+.footerTitle {
+  @apply font-bold uppercase text-white
+}
+.footerTextResize {
+  @apply text-xs md:text-base
+}
+.footerLink {
+  @apply  cursor-pointer  hover:text-white transition-colors ease-in-out duration-150
+}
+.footerSocials {
+  @apply  hover:opacity-80 transition-opacity ease-in-out duration-200 h-[25px] md:h-[40px]
+}
+.Container {
+  @apply w-[95%] sm:w-[94%] mx-auto
+}
+input:checked + div {
+  @apply border-blue-500;
+}
+input:checked + div svg {
+  @apply block;
+}
+
+.cls-1,.cls-2{
+  fill:none;
+  stroke:#020202;
+  stroke-miterlimit:10;
+  stroke-width:1.15px;
+}.cls-2{
+   stroke-linecap:square;
+ }
+.logInSvg {
+  stroke-width: 1.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke: black;
+}
+.sliderSvg {
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+/*.line-clamp-7 {*/
+/*  overflow: hidden;*/
+/*  display: -webkit-box;*/
+/*  -webkit-box-orient: vertical;*/
+/*  -webkit-line-clamp: 7;*/
+/*}*/
+.react-multi-carousel-dot button {
+  border: transparent !important;
+  opacity: 75% !important;
+  background-color: rgb(209 213 219 / 75%) !important;
+}
+.react-multi-carousel-dot--active button {
+  opacity: 100% !important;
+  background-color: rgb(75 85 99 / 100%) !important;
+}
+/*.hide {*/
+/*  transition: opacity 300ms, visibility 300ms, display 200ms;*/
+/*  display: none;*/
+/*  opacity: 0;*/
+/*}*/
+
+
+
+::-webkit-scrollbar {
+  background-color: white;
+  /*width: 12px;*/
+  @apply w-[7px] sm:w-2 lg:w-2.5
+}
+::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background-color: #b9bec2;
+  border-radius: 25px;
+  /*border: 3px solid transparent;*/
+  background-clip: content-box;
 }
