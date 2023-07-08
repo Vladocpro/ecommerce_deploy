@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "stripe:listen": "stripe listen --events checkout.session.completed --forward-to localhost:3000/api/stripe/webhook",
+    "postinstall": "prisma generate"
   },
   "dependencies": {
     "@next-auth/prisma-adapter": "^1.0.7",
