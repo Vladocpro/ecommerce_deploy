@@ -27,8 +27,6 @@ export async function POST(req: Request) {
          quantity: item.quantity
       }
    })
-   console.log("LLIIIINNEEEE ITEMSS " + JSON.stringify(lineItems))
-   console.log("EEEEENNNNNDD OF LIIINE ITEMS")
 
    const currentUser  = body.user;
 
