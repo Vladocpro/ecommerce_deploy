@@ -1,6 +1,6 @@
 "use client"
 
-import React, {FC} from 'react';
+import React, {FC, useEffect} from 'react';
 import Link from "next/link";
 import {setAuthPopup} from "../../redux/slices/modals";
 import Tooltip from "../Tooltip";
@@ -19,6 +19,8 @@ const NavLinks: FC<NavLinkProps> =  ({user})  => {
 
       const router = useRouter();
       const dispatch = useDispatch()
+
+
 
    return (
        <div className="hidden gap-4 items-center sm:flex">

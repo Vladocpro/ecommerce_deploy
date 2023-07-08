@@ -14,7 +14,7 @@ import Slider from "../../../../components/Slider";
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
 import PriceComponent from "../../../../components/PriceComponent";
-import {log} from "next/dist/server/typescript/utils";
+import Link from "next/link";
 
 
 const responsive = {
@@ -55,7 +55,6 @@ const Home =  () => {
          return
       }
 
-
       if(action === ButtonAction.ADDTOBAG) {
          if(sizes.length === 0) {
             dispatch(setToastPopup({visible: true, message: "You need to select sizes", position: ToastPositions.AUTH, type: ToastType.ERROR, duration: 2000}))
@@ -74,6 +73,23 @@ const Home =  () => {
          }
       }
    };
+
+   const sizeGuideRedirect = () : string => {
+      switch (product?.category) {
+         case "Shoes":
+            return `https://www.nike.com/gb/size-fit/${product?.gender}s-footwear`
+         case "T-Shirt":
+            return `https://www.nike.com/gb/size-fit/${product?.gender}s-tops-alpha`
+         case "Trousers":
+            return `https://www.nike.com/gb/size-fit/${product?.gender}s-bottoms-alpha`
+         case "Jacket":
+            return `https://www.nike.com/gb/size-fit/${product?.gender}s-tops-alpha`
+         default:
+            break;
+      }
+      return  "/"
+   }
+
 
    const SizeElement = ({size, key} : {size:  {title: string, isAvailable: boolean}, key: number }) => {
 
@@ -131,7 +147,7 @@ const Home =  () => {
                       removeArrowOnDeviceType={["tablet", "mobile"]}
                       itemClass="carousel-item-padding-40-px">
                      {product.images.map((slide) => (
-                         <Image src={slide} key={slide} width={720} height={720}  className="object-contain mx-auto select-none pointer-events-none" alt=""/>
+                         <Image src={slide} key={slide} width={720} height={720}  className="object-contain mx-auto select-none pointer-events-none pr-4 sm:pr-0" alt=""/>
                      ))}
                   </Carousel>
                </div>
@@ -150,7 +166,7 @@ const Home =  () => {
                 <div className="text-lg font-semibold mt-4 ">
                    <div className="flex justify-between">
                       <span>Select Size</span>
-                      <span className="mr-1.5 text-gray-500 font-medium cursor-pointer">Size Guide</span>
+                      <Link  href={sizeGuideRedirect()} target="_blank" rel="noopener noreferrer" className="mr-1.5 text-gray-500 font-medium cursor-pointer">Size Guide</Link>
                    </div>
                    <ul className="grid grid-cols-3 gap-x-6 gap-y-2.5 mt-3 mb-6 w-full">
                       {/*@ts-ignore*/}

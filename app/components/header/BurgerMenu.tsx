@@ -2,14 +2,18 @@
 
 import React, {useState} from 'react';
 import Link from "next/link";
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {RootState} from "../../redux/store";
+import {signOut} from "next-auth/react";
+import {setAuthPopup} from "../../redux/slices/modals";
 
 
 const BurgerMenu = () => {
 
    const [burgerVisible, setBurgerVisible] = useState<boolean>(false)
    const isAuth= useSelector((state : RootState) => state.auth.user)
+   const dispatch = useDispatch();
+
 
    return (
        <div className="block mr-5  sm:hidden">
@@ -64,11 +68,17 @@ const BurgerMenu = () => {
                    </div>
                 </Link>
                 <hr className="h-[2.5px] rounded-md bg-black mt-5"/>
-                <li className="headerBurgerLink justify-between mt-3">
-                   <span>Log out</span>
+                <div className="headerBurgerLink justify-between mt-3" onClick={() => {
+                   setBurgerVisible(false)
+                   if (isAuth)
+                      signOut()
+                   else
+                     dispatch(setAuthPopup(true))
+                }}>
+                   <span>{isAuth ? "Log out" : "Log in"}</span>
                    {
                       isAuth ?
-                          <Link href="/" onClick={() => setBurgerVisible(false)} className="mr-1">
+                          <Link href="/" className="mr-1">
                              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" className="logInSvg">
                                 <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
                                 <polyline points="16 17 21 12 16 7"></polyline>
@@ -76,7 +86,7 @@ const BurgerMenu = () => {
                              </svg>
                           </Link>
                           :
-                          <Link href="/" onClick={() => setBurgerVisible(false)} className="mr-1">
+                          <Link href="/"  className="mr-1">
                              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"  className="logInSvg">
                                 <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
                                 <polyline points="10 17 15 12 10 7"></polyline>
@@ -84,7 +94,7 @@ const BurgerMenu = () => {
                              </svg>
                           </Link>
                    }
-                </li>
+                </div>
              </div>
           </div>
        </div>
