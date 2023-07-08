@@ -24,13 +24,6 @@ const ClientOrders : FC<ClientOrdersProps> = ({currentUser, userOrders}) => {
    const dispatch = useDispatch();
    const router = useRouter()
 
-   useEffect(() => {
-      getFetch("/api/getOrders").then((data) => {
-         setOrders(data.orders)
-         setFilteredOrders(data.orders)
-         setUser(data.user)
-      }).catch((e) => console.log(e))
-   }, []);
 
    useEffect(() => {
       setFilteredOrders(orders.filter((order : Order) => order.id.toLowerCase().includes(search.toUpperCase()) || order.date.toLowerCase().includes(search.toLowerCase())))

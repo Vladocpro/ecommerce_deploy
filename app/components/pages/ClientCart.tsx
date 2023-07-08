@@ -164,7 +164,7 @@ const ClientCart : FC<ClientCartProps> = ({user}) => {
                                  // @ts-ignore
                                  title={"Quantity: " + product.quantity.toString()} changeTittle={true}
                                  constTitle="Quantity: "
-                                 containerStyles="bg-white shadow-xl z-20 px-0"
+                                 containerStyles="bg-white shadow-xl z-20 px-0 -right-1"
                                  itemStyles="px-5 hover:bg-blue-200 hover:text-black"
                                  svgStyles="bg-gray-500"
                                  itemClick={(quantity: number) => editQuantity(product,quantity)}

@@ -8,7 +8,7 @@ export async function PATCH(req: Request) {
 
    const currentUser  = await getCurrentUser();
    if (!currentUser) {
-      return NextResponse.error();
+      return NextResponse.json({error: `Log into your account`})
    }
    let favorites = [...(currentUser.favorites || [])];
    // @ts-ignore

@@ -6,6 +6,8 @@ import Image from "next/image";
 import {getFetch,postFetch} from "../../../lib/fetcher";
 import ProductLayout from "../../components/store/ProductLayout";
 import {Product} from "../../types";
+import Link from "next/link";
+import PriceComponent from "../../components/PriceComponent";
 
 const Home =  () => {
 
@@ -26,7 +28,34 @@ const Home =  () => {
           </div>
 
           <div className="Container">
-             {products && <ProductLayout products={products}/>}
+             {products && (
+                 <div className="grid grid-cols-2 lg:grid-cols-3 w-full gap-y-6 gap-5 text-black mb-10">
+                    {products.map((product : Product) => (
+                        <div key={product.id} className="">
+                           <Link  href={`/store/product/${product.id}`} className="w-full ">
+                              <Image
+                                  className="w-full  object-cover pointer-events-none select-none"
+                                  // fill
+                                  priority={true}
+                                  height={620}
+                                  width={600}
+                                  // @ts-ignore
+                                  src={product.images[0]}
+                                  alt="Image"
+                              />
+                              <div className="flex flex-col text-lg font-medium cursor-pointer" >
+                                 <span>{product.title}</span>
+                                 <span className="text-gray-500 font-normal leading-4">{product.category}</span>
+                                 <span className="mt-2">
+                    <PriceComponent product={product} showPercent={true} mobileHidePercent={true} />
+                    </span>
+                              </div>
+                           </Link>
+                        </div>
+
+                    ))}
+                 </div>
+             )}
           </div>
 
        </div>

@@ -6,6 +6,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {RootState} from "../../redux/store";
 import {signOut} from "next-auth/react";
 import {setAuthPopup} from "../../redux/slices/modals";
+import {router} from "next/client";
 
 
 const BurgerMenu = () => {
@@ -70,10 +71,13 @@ const BurgerMenu = () => {
                 <hr className="h-[2.5px] rounded-md bg-black mt-5"/>
                 <div className="headerBurgerLink justify-between mt-3" onClick={() => {
                    setBurgerVisible(false)
-                   if (isAuth)
+                   if (isAuth) {
                       signOut()
-                   else
-                     dispatch(setAuthPopup(true))
+                      router.push("/")
+                   }
+                   else {
+                      dispatch(setAuthPopup(true))
+                   }
                 }}>
                    <span>{isAuth ? "Log out" : "Log in"}</span>
                    {
