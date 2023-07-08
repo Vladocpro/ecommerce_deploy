@@ -120,7 +120,7 @@ const ClientCart : FC<ClientCartProps> = ({user}) => {
             }))
             return;
          }
-         const  { url }  = await postFetch('/api/makePayment', {items: products, User: currentUser});
+         const  { url }  = await postFetch('/api/makePayment', {items: products, user: currentUser});
          window.location.assign(url)
       }
 

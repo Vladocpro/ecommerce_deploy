@@ -22,13 +22,16 @@ export async function POST(req: Request) {
                   productId: item.id,
                },
             },
-            unit_amount: Number((item.price - ((item.price * item.sale) / 100)).toFixed(2)) * 100,
+            unit_amount: Math.round(Number((item.price - ((item.price * item.sale) / 100)).toFixed(2)) * 100),
          },
          quantity: item.quantity
       }
    })
+   console.log("LLIIIINNEEEE ITEMSS " + JSON.stringify(lineItems))
+   console.log("EEEEENNNNNDD OF LIIINE ITEMS")
 
    const currentUser  = body.user;
+
    if (!currentUser) {
       return NextResponse.error();
    }
