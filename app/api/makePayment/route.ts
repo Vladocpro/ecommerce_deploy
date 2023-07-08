@@ -50,6 +50,7 @@ export async function POST(req: Request) {
          }],
          line_items: lineItems
       })
+
       return NextResponse.json({url: session.url})
    } catch (e) {
       console.log(e)

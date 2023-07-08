@@ -124,6 +124,7 @@ const ClientCart : FC<ClientCartProps> = ({user}) => {
          window.location.assign(url)
       }
 
+
       if(!currentUser || !products) {
          return (
              <div>
