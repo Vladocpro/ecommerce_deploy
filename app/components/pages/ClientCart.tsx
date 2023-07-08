@@ -2,7 +2,6 @@
 
 
 import React, {FC, useEffect, useState} from 'react';
-import getCurrentUser from "../../actions/getCurrentUser";
 import Image from "next/image";
 import {Product, User} from "../../types";
 import PriceComponent from "../PriceComponent";
@@ -121,7 +120,7 @@ const ClientCart : FC<ClientCartProps> = ({user}) => {
             }))
             return;
          }
-         const  { url }  = await postFetch('/api/makePayment', {items: products});
+         const  { url }  = await postFetch('/api/makePayment', {items: products, User: currentUser});
          window.location.assign(url)
       }
 

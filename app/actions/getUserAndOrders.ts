@@ -13,6 +13,27 @@ export async function getUserAndOrders() {
    });
    return {
       user,
-      orders
+      orders: orders.reverse()
+   }
+}
+
+export async function getUserAndOrder(sessionId : string) {
+   const user = await getCurrentUser()
+
+   if(user === null) return undefined
+
+   const order = await prisma.order.findUnique({
+      where: {
+         // @ts-ignore
+         sessionId: sessionId
+      }
+   })
+   if(user.id !== order.userId) {
+      return {error: "Access Denied, log into your account"}
+
+   }
+   return {
+      user,
+      order
    }
 }

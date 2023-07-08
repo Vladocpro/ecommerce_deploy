@@ -61,8 +61,8 @@ const Home =  () => {
             return
          }
          setSizes([])
-         dispatch(setToastPopup({visible: true, message: "Added to Cart", position: ToastPositions.AUTH, type: ToastType.BLACK, duration: 2000}))
          await axios.patch("/api/cart", {product: product, sizes: sizes}).catch((e) => console.log(e))
+         dispatch(setToastPopup({visible: true, message: "Added to Cart", position: ToastPositions.AUTH, type: ToastType.BLACK, duration: 2000}))
       }
       if(action === ButtonAction.ADDTOFAV) {
          const response = await axios.patch("/api/favorites", {product: product}).catch((e) => console.log(e))

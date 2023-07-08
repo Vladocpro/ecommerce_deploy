@@ -28,7 +28,7 @@ export async function POST(req: Request) {
       }
    })
 
-   const currentUser  = await getCurrentUser();
+   const currentUser  = body.user;
    if (!currentUser) {
       return NextResponse.error();
    }
