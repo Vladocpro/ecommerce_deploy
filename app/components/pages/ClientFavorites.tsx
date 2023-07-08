@@ -20,8 +20,8 @@ const ClientFavorites : FC<ClientFavoritesProps> = ({user}) => {
 
    const removeFromFav = async (product : Product) => {
       const newProducts = products.filter((item) => (item!.id !== product.id))
+      const response = await axios.put("/api/favorites",  {products: newProducts, user: user}).catch((e) => console.log(e))
       setProducts(newProducts);
-      const response = await axios.put("/api/favorites",  {products: newProducts}).catch((e) => console.log(e))
       if(response?.data.error) {
          dispatch(setToastPopup({visible: true, message: response.data.error, position: ToastPositions.AUTH, type: ToastType.ERROR, duration: 2000}))
       } else {
