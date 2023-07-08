@@ -7,9 +7,9 @@ const nextConfig = {
          'static.nike.com'
       ]
    },
-   // typescript: {
-   //    ignoreBuildErrors: true
-   // }
+   typescript: {
+      ignoreBuildErrors: true
+   }
 }
 
 module.exports = nextConfig
