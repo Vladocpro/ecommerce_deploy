@@ -7,6 +7,14 @@ const HOME = async () => {
 
    const data = await getUserAndOrders();
 
+   if(!data) {
+      return (
+          <div>
+
+          </div>
+      )
+   }
+
    return (
        <ClientOrders currentUser={data?.user} userOrders={data?.orders}/>
    )
