@@ -71,7 +71,6 @@ const FiltersPopup = () => {
    const applyFilters = () => {
       dispatch(setFilters(tempFilters))
       dispatch(setFiltersPopup(false))
-      clearFilters()
    }
    const clearFilters= () => {
       setTempFilters(defaultFilterState)
@@ -205,7 +204,10 @@ const FiltersPopup = () => {
 
 
              <div className="sticky h-16 overflow-y-hidden bottom-0 px-2 w-full bg-gray-100  flex gap-4 pt-2 pb-[52px] justify-between">
-                <button className="h-[39px]  bg-white w-full rounded-2xl  border-[1.5px] border-gray-300" onClick={clearFilters}>
+                <button className="h-[39px]  bg-white w-full rounded-2xl  border-[1.5px] border-gray-300" onClick={() => {
+                   clearFilters();
+                   dispatch(setFilters(defaultFilterState))
+                }}>
                    Clear ({filtersCount})
                 </button>
                 <button className="h-[39px] w-full rounded-2xl bg-black text-white " onClick={applyFilters}>
