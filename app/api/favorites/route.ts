@@ -40,7 +40,7 @@ export async function PUT(req: Request) {
    // const currentUser  = body.user;
    const currentUser  = await getCurrentUser();
    if (!currentUser) {
-      return NextResponse.error();
+      return NextResponse.json({error: `Log into your account`})
    }
    try {
       const user = await prisma.user.update({
