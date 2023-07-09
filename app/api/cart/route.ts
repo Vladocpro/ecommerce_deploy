@@ -13,7 +13,7 @@ export async function PATCH(req: Request) {
 
    const currentUser  = await getCurrentUser();
    if (!currentUser) {
-      return NextResponse.json({error: `Log into your account`})
+      return NextResponse.error();
    }
    const product = body.product
    try {
@@ -58,7 +58,7 @@ export async function PATCH(req: Request) {
             }
          }
       });
-      return NextResponse.json({message: "Added to cart"})
+      return NextResponse.json(currentUser.cart)
 
    } catch (e) {
       console.log(e)
