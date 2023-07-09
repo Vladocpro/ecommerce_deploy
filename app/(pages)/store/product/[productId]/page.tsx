@@ -43,6 +43,7 @@ const Home =  () => {
    const [sizes, setSizes] =useState<string[]>([]);
 
    useEffect(() => {
+      window.scrollTo(0, 0)
       getFetch("/api/products/" + params?.productId).then((data) => setProduct(data))
 
    }, []);

@@ -39,6 +39,11 @@ const FiltersPopup = () => {
    const dispatch = useDispatch()
 
 
+   useEffect(() => {
+      if(isOpen)
+         window.scrollTo(0, 0)
+   }, [isOpen]);
+
 
    const filtersCount : number = useMemo(() => {
       let counter = 0;
