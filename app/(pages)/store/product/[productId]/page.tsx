@@ -43,10 +43,14 @@ const Home =  () => {
    const [sizes, setSizes] =useState<string[]>([]);
 
    useEffect(() => {
-      window.scrollTo(0, 0)
       getFetch("/api/products/" + params?.productId).then((data) => setProduct(data))
 
    }, []);
+   useEffect(() => {
+      if(product)
+         window.scrollTo(0, 0)
+   }, [product]);
+
 
 
    const buttonClick = async  (action : ButtonAction) => {
