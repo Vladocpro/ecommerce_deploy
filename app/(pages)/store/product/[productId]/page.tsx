@@ -61,8 +61,12 @@ const Home =  () => {
             return
          }
          setSizes([])
-         await axios.patch("/api/cart", {product: product, sizes: sizes}).catch((e) => console.log(e))
-         dispatch(setToastPopup({visible: true, message: "Added to Cart", position: ToastPositions.AUTH, type: ToastType.BLACK, duration: 2000}))
+         const response = await axios.patch("/api/cart", {product: product, sizes: sizes}).catch((e) => console.log(e))
+         if(response?.data.error) {
+            dispatch(setToastPopup({visible: true, message: response.data.error, position: ToastPositions.AUTH, type: ToastType.ERROR, duration: 2000}))
+         } else {
+            dispatch(setToastPopup({visible: true, message: response?.data.message, position: ToastPositions.AUTH, type: ToastType.BLACK, duration: 2000}))
+         }
       }
       if(action === ButtonAction.ADDTOFAV) {
          const response = await axios.patch("/api/favorites", {product: product}).catch((e) => console.log(e))
