@@ -1,6 +1,6 @@
 "use client"
 
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {Product} from "@prisma/client";
 import {useParams, useRouter} from "next/navigation";
 import {getFetch, postFetch} from "../../../../../lib/fetcher";
@@ -38,6 +38,7 @@ enum ButtonAction {
 const Home =  () => {
    const params = useParams()
    const dispatch = useDispatch()
+   const ref = useRef(null);
    const [product, setProduct] = useState<Product | null>(null)
    const [sliderImage, setSliderImage] = useState<number>(0)
    const [sizes, setSizes] =useState<string[]>([]);
@@ -46,10 +47,14 @@ const Home =  () => {
       getFetch("/api/products/" + params?.productId).then((data) => setProduct(data))
 
    }, []);
+   const srollToTheTop = () => {
+      window.scrollTo({top: 0, left: 0, behavior: "smooth"});
+   }
+
    useEffect(() => {
-      if(product)
-         window.scrollTo(0, 0)
-   }, [product]);
+      if(ref.current !== null)
+         srollToTheTop();
+   }, [ref.current]);
 
 
 
@@ -125,7 +130,7 @@ const Home =  () => {
    }
 
    return (
-       <div className="flex flex-col lg:flex-row justify-between lg:w-[90%] mx-auto  my-5">
+       <div className="flex flex-col lg:flex-row justify-between lg:w-[90%] mx-auto  my-5" ref={ref}>
           <div className="lg:flex block ">
              <div className="hidden lg:flex ml-[6%] flex-col gap-4 w-[140px]">
                 {product?.images.map((image: string, index: number) => (
