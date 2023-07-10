@@ -9,7 +9,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {clearChosenSizes, pushChosenSize} from "../../../../redux/slices/product";
 import axios from "axios";
 import {store} from "../../../../redux/store";
-import {setToastPopup, ToastPositions, ToastType} from "../../../../redux/slices/modals";
+import {setAuthPopup, setToastPopup, ToastPositions, ToastType} from "../../../../redux/slices/modals";
 import Slider from "../../../../components/Slider";
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
@@ -73,7 +73,10 @@ const Home =  () => {
          setSizes([])
          const response = await axios.patch("/api/cart", {product: product, sizes: sizes}).catch((e) => console.log(e))
          if(response?.data.error) {
-            dispatch(setToastPopup({visible: true, message: response.data.error, position: ToastPositions.AUTH, type: ToastType.ERROR, duration: 2000}))
+            if(response.data.error === "Log into your account") {
+               dispatch(setAuthPopup(true))
+            }
+            // dispatch(setToastPopup({visible: true, message: response.data.error, position: ToastPositions.AUTH, type: ToastType.ERROR, duration: 2000}))
          } else {
             dispatch(setToastPopup({visible: true, message: response?.data.message, position: ToastPositions.AUTH, type: ToastType.BLACK, duration: 2000}))
          }
@@ -81,7 +84,10 @@ const Home =  () => {
       if(action === ButtonAction.ADDTOFAV) {
          const response = await axios.patch("/api/favorites", {product: product}).catch((e) => console.log(e))
          if(response?.data.error) {
-            dispatch(setToastPopup({visible: true, message: response.data.error, position: ToastPositions.AUTH, type: ToastType.ERROR, duration: 2000}))
+            if(response.data.error === "Log into your account") {
+               dispatch(setAuthPopup(true))
+            }
+            // dispatch(setToastPopup({visible: true, message: response.data.error, position: ToastPositions.AUTH, type: ToastType.ERROR, duration: 2000}))
          } else {
             dispatch(setToastPopup({visible: true, message: response?.data.message, position: ToastPositions.AUTH, type: ToastType.BLACK, duration: 2000}))
          }
