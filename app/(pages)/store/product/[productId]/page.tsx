@@ -140,15 +140,15 @@ const Home =  () => {
           <div className="lg:flex block ">
              <div className="hidden lg:flex ml-[6%] flex-col gap-4 w-[140px]">
                 {product?.images.map((image: string, index: number) => (
-                    <Image src={image} key={image} priority={true}   width={140} height={140} alt="" className="object-cover cursor-pointer hover:shadow-xl hover:opacity-70  rounded-md" onMouseEnter={() => setSliderImage(index)}/>
+                    <Image src={image} key={image} priority={true}   width={140} height={140} alt="" className="object-cover cursor-pointer hover:shadow-xl hover:opacity-70 transition-all duration-200  rounded-md" onMouseEnter={() => setSliderImage(index)}/>
                 ))}
              </div>
 
              <div className="hidden lg:block w-full max-w-[720px] rounded-ld shrink">
-                <Image src={product?.images[0]} priority={true} width={720} height={720} alt="" className={`object-contain rounded-lg ${sliderImage === 0 ? "grid" : "hidden" }   grid-cols-productSizeSection aspect-[1/1]`}/>
-                <Image src={product?.images[1]} priority={true} width={720} height={720} alt="" className={`object-contain rounded-lg ${sliderImage === 1 ? "grid" : "hidden" }   grid-cols-productSizeSection aspect-[1/1]`}/>
-                <Image src={product?.images[2]} priority={true} width={720} height={720} alt="" className={`object-contain rounded-lg ${sliderImage === 2 ? "grid" : "hidden" }   grid-cols-productSizeSection aspect-[1/1]`}/>
-                <Image src={product?.images[3]} priority={true} width={720} height={720} alt="" className={`object-contain rounded-lg ${sliderImage === 3 ? "grid" : "hidden" }   grid-cols-productSizeSection aspect-[1/1]`}/>
+                <Image src={product?.images[0]} priority={true} width={720} height={720} alt="" className={`object-contain rounded-lg  ${sliderImage === 0 ? "grid" : "hidden" }   grid-cols-productSizeSection aspect-[1/1]`}/>
+                <Image src={product?.images[1]} priority={true} width={720} height={720} alt="" className={`object-contain rounded-lg  ${sliderImage === 1 ? "grid" : "hidden" }   grid-cols-productSizeSection aspect-[1/1]`}/>
+                <Image src={product?.images[2]} priority={true} width={720} height={720} alt="" className={`object-contain rounded-lg  ${sliderImage === 2 ? "grid" : "hidden" }   grid-cols-productSizeSection aspect-[1/1]`}/>
+                <Image src={product?.images[3]} priority={true} width={720} height={720} alt="" className={`object-contain rounded-lg  ${sliderImage === 3 ? "grid" : "hidden" }   grid-cols-productSizeSection aspect-[1/1]`}/>
              </div>
 
              <div className="block lg:hidden mx-3 mb-12 w-full shrink">
