@@ -1,7 +1,7 @@
 "use client"
 
 import React, {FC, useCallback} from 'react';
-import {IFiltersState} from "../../../redux/slices/filters";
+import {IFiltersState} from "../../../types";
 
 
 interface SectionOptionsProps {

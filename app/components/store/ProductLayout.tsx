@@ -7,7 +7,7 @@ import Link from "next/link";
 import PriceComponent from "../PriceComponent";
 import {Product} from "../../types";
 import {postFetch} from "../../../lib/fetcher";
-import { IFiltersState} from "../../redux/slices/filters";
+import { IFiltersState} from "../../types";
 import {useRouter, useSearchParams} from "next/navigation";
 import qs from "query-string";
 

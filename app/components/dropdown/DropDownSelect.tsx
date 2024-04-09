@@ -2,7 +2,6 @@
 
 import React, {FC, useRef, useState} from 'react';
 import {useDispatch} from "react-redux";
-import {setSortBy} from "../../redux/slices/filters";
 import useClickOutside from "../useClickOutside";
 
 interface DropDownSelectProps {
@@ -26,7 +25,7 @@ const DropDownSelect: FC<DropDownSelectProps> = ({title, titleStyles, changeTitt
    const [dropDownTitle, setDropDownTitle] = useState<string>(title)
    const [isOpen, setIsOpen] = useState<boolean>(isExpanded)
    const dispatch = useDispatch()
-   const dropdownRef = useRef()
+   const dropdownRef = useRef<HTMLDivElement | null>(null)
 
    useClickOutside(dropdownRef, () => {
       setIsOpen(false);
@@ -50,9 +49,6 @@ const DropDownSelect: FC<DropDownSelectProps> = ({title, titleStyles, changeTitt
                     setIsOpen(!isOpen)
                     if (itemClick) {
                        itemClick(Number(item))
-                    }
-                    if(sortBy !== undefined && sortBy.length > 0 && sortBy.length === options.length) {
-                       dispatch(setSortBy(sortBy[index]))
                     }
                  }}
                       className={` cursor-pointer hover:text-gray-400 ${itemStyles} rounded-md`}

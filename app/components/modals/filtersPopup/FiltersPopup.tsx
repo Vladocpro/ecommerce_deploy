@@ -4,15 +4,13 @@ import React, {useEffect, useMemo, useRef, useState} from 'react';
 import {useDispatch, useSelector} from "react-redux";
 import {RootState} from "../../../redux/store";
 import {setFiltersPopup} from "../../../redux/slices/modals";
-import {
-   IFiltersState, setFilters,
-} from "../../../redux/slices/filters";
 import debounce from "lodash.debounce";
 import FilterSectionContainer from "./FilterSectionContainer";
 import SectionOptions from "./SectionOptions";
 import { useRouter, useSearchParams } from 'next/navigation';
 import qs from "query-string";
 import {fillFilterObject} from "../../store/ProductLayout";
+import {IFiltersState} from "../../../types";
 
 const defaultFilterState = {
    sortBy: null,
@@ -235,7 +233,6 @@ const FiltersPopup = () => {
              <div className="sticky h-16 overflow-y-hidden bottom-0 px-2 w-full bg-gray-100  flex gap-4 pt-2 pb-[52px] justify-between">
                 <button className="h-[39px]  bg-white w-full rounded-2xl  border-[1.5px] border-gray-300" onClick={() => {
                    clearFilters();
-                   dispatch(setFilters(defaultFilterState))
                 }}>
                    Clear ({filtersCount})
                 </button>

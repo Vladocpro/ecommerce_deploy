@@ -1,4 +1,3 @@
-
 export type User = {
    id:            string,
    email?:         string,
@@ -45,3 +44,12 @@ export type Auth = {
    email: string,
    password: string,
 }
+export type IFiltersState = {
+   sortBy: string |null,
+   search: string |null,
+   sale: boolean,
+   price: string[],
+   category: string[],
+   gender: string[],
+   sizes: string[],
+};
