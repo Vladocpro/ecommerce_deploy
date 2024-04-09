@@ -5,13 +5,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {RootState} from "../../../redux/store";
 import {setFiltersPopup} from "../../../redux/slices/modals";
 import {
-   IFiltersState, initialFiltersState,
-   setCategory, setFilters,
-   setGender,
-   setPrice,
-   setSale,
-   setSearch,
-   setSizes
+   IFiltersState, setFilters,
 } from "../../../redux/slices/filters";
 import debounce from "lodash.debounce";
 import FilterSectionContainer from "./FilterSectionContainer";
@@ -34,7 +28,7 @@ const sizes= ["XS","S","M","L","XL","2XL","3XL","UK 5.5","UK 6","UK 6.5","UK 7",
 const FiltersPopup = () => {
 
    const isOpen: boolean = useSelector((state: RootState) => state.modals.filtersPopup)
-   const inputRef = useRef(null);
+   const inputRef = useRef<HTMLInputElement | null>(null);
    const [tempFilters, setTempFilters] = useState<IFiltersState>(defaultFilterState)
    const dispatch = useDispatch()
    const router = useRouter()
@@ -69,8 +63,10 @@ const FiltersPopup = () => {
    }
 
    const applyFilters = () => {
+
       const url = qs.stringifyUrl({
          url: "/store",
+         // @ts-ignore
          query: tempFilters
       }, {skipNull: true})
 
@@ -79,7 +75,6 @@ const FiltersPopup = () => {
    }
    const clearFilters= () => {
       if (inputRef && inputRef.current) {
-         //@ts-ignore
          inputRef.current.value = "";
       }
       setTempFilters(defaultFilterState)
@@ -133,6 +128,7 @@ const FiltersPopup = () => {
    }
 
    useEffect(() => {
+      if(inputRef.current === null) return;
       const parsedParams  = qs.parse(params?.toString() as string);
       if(params?.toString() === "") {
          clearFilters()
@@ -141,7 +137,6 @@ const FiltersPopup = () => {
       const filters: IFiltersState = fillFilterObject(parsedParams)
       if(parsedParams.search  === undefined || parsedParams.search  === null || parsedParams.search === "") {
          filters.search = ""
-         // @ts-ignore
          inputRef.current.value = ""
       } else {
          // @ts-ignore

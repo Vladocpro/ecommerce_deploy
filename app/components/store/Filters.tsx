@@ -15,7 +15,7 @@ const Filters = () => {
    const router = useRouter()
    const params = useSearchParams()
    const dispatch = useDispatch()
-   const inputRef = useRef()
+   const inputRef = useRef<HTMLInputElement | null>(null)
 
 
    useEffect(() => {
@@ -49,6 +49,7 @@ const Filters = () => {
    }
 
    useEffect(() => {
+      if (inputRef.current === null) return
       const paramSearchValue = params?.get("search")
       if(paramSearchValue === "" || paramSearchValue === null || paramSearchValue === undefined) {
          setSearchValue("")

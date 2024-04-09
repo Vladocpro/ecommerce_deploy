@@ -28,7 +28,7 @@ const DropDownSelect: FC<DropDownSelectProps> = ({ svgStyles, svgBox, itemStyles
    const [isOpen, setIsOpen] = useState<boolean>(isExpanded)
    const params = useSearchParams()
    const router = useRouter()
-   const dropdownRef = useRef()
+   const dropdownRef = useRef<HTMLDivElement | null>(null)
 
    useClickOutside(dropdownRef, () => {
       setIsOpen(false);
@@ -55,7 +55,7 @@ const DropDownSelect: FC<DropDownSelectProps> = ({ svgStyles, svgBox, itemStyles
          query: updatedQuery
       }, {skipNull: true})
 
-      router.replace(url)
+      router.push(url)
    }, [dropDownTitle]);
 
    useEffect(() => {
