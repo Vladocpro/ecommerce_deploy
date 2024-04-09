@@ -2,6 +2,8 @@
 import prisma from "../../../lib/prismadb";
 import {NextResponse} from "next/server";
 import {Product} from "../../types";
+import qs from "query-string";
+import {IFiltersState} from "./app/redux/slices/filters";
 
 interface ISize {
    title: string,
@@ -11,6 +13,10 @@ interface ISize {
 export async function POST(req : any) {
    try {
       const reqFilters = await req.json();
+      if(Object.keys(reqFilters).length === 0) {
+         const response = await prisma.product.findMany();
+         return NextResponse.json(response);
+      }
 
       const filters = [];
 
@@ -87,9 +93,9 @@ export async function POST(req : any) {
       }
 
       if (reqFilters.sortBy) {
-            if(reqFilters.sortBy === 'asc')
+            if(reqFilters.sortBy === "Price: Low-High")
                filteredProducts = filteredProducts.sort((a, b) => a.saledPrice - b.saledPrice);
-            if(reqFilters.sortBy === 'desc')
+            if(reqFilters.sortBy === "Price: High-Low")
                filteredProducts = filteredProducts.sort((a, b) => b.saledPrice - a.saledPrice);
       }
 

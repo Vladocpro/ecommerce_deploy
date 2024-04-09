@@ -17,12 +17,12 @@ interface selectSizePopup {
 }
 
 export enum ToastPositions  {
-   AUTH = "inline-block self-center top-5",
+   AUTH = 'inline-block self-center top-5 left-1/2 translate-x-[-50%]',
    RIGHT=  ""
 }
 export enum ToastType  {
-   SUCCESS = "bg-green-500",
-   ERROR   = "bg-red-500",
+   SUCCESS = "bg-black",
+   ERROR   = "bg-red-700",
    BLACK   = "bg-black",
 }
 
@@ -40,7 +40,7 @@ const initialState : modalState = {
       visible:  false ,
       message: "",
       duration: 3000,
-      position: ToastPositions.RIGHT,
+      position: ToastPositions.AUTH,
       type: ToastType.SUCCESS,
    },
    selectSizePopup: {
@@ -62,6 +62,9 @@ const modalsSlice = createSlice({
          state.selectSizePopup.product = action.payload.product;
       },
       setToastPopup: (state, action: PayloadAction<toastPopup>) => {
+         if (typeof action.payload.message !== 'string') {
+            return;
+         }
          state.toastPopup.message = action.payload.message;
          state.toastPopup.position = action.payload.position;
          state.toastPopup.type = action.payload.type;

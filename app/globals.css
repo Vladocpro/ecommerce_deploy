@@ -61,7 +61,7 @@ a {
   @apply text-xs md:text-base
 }
 .footerLink {
-  @apply  cursor-pointer  hover:text-white transition-colors ease-in-out duration-150
+  @apply  cursor-pointer hover:text-white transition-colors ease-in-out duration-150
 }
 .footerSocials {
   @apply  hover:opacity-80 transition-opacity ease-in-out duration-200 h-[25px] md:h-[40px]
@@ -75,7 +75,16 @@ input:checked + div {
 input:checked + div svg {
   @apply block;
 }
+.aside-filters::-webkit-scrollbar {
+  @apply w-[7px]
+}
 
+.aside-filters::-webkit-scrollbar-thumb {
+  background-color: #7F7F7F;
+  border-radius: 25px;
+  /*border: 3px solid transparent;*/
+  background-clip: content-box;
+}
 .cls-1,.cls-2{
   fill:none;
   stroke:#020202;
@@ -94,12 +103,7 @@ input:checked + div svg {
   stroke-linecap: round;
   stroke-linejoin: round;
 }
-/*.line-clamp-7 {*/
-/*  overflow: hidden;*/
-/*  display: -webkit-box;*/
-/*  -webkit-box-orient: vertical;*/
-/*  -webkit-line-clamp: 7;*/
-/*}*/
+
 .react-multi-carousel-dot button {
   border: transparent !important;
   opacity: 75% !important;

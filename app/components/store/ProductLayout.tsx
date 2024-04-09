@@ -10,30 +10,61 @@ import {postFetch} from "../../../lib/fetcher";
 import {useDispatch, useSelector} from "react-redux";
 import {clearFilters, IFiltersState, setFilters} from "../../redux/slices/filters";
 import {RootState} from "../../redux/store";
+import {useRouter, useSearchParams} from "next/navigation";
+import qs from "query-string";
+import {updatePropertyArray} from "../dropdown/DropDownOptions";
 
 interface ProductLayoutProps {
    products: Product[]
 }
 
+export const fillFilterObject = (filters: any) => {
+   let initialBody : IFiltersState = {
+      sortBy: null,
+      search: null,
+      sale: false,
+      price: [],
+      category: [],
+      gender: [],
+      sizes: [],
+   };
+   if(!filters|| !Object.keys(filters).length) return initialBody
+   for (let key in initialBody) {
+      if (key in filters) {
+         if(typeof filters[key] === "string" && ["price", "category","gender","sizes"].some((category) => category === key)) {
+            initialBody[key].push(filters[key])
+         } else {
+            initialBody[key] = filters[key];
+         }
+      }
+   }
+
+   return initialBody
+}
+
 const ProductLayout: FC<ProductLayoutProps> = ({products}) => {
 
       const [filteredProducts, setFilteredProducts] = useState<Product[]>(products)
-      const filters = useSelector((state : RootState) => state.filters)
-      const dispatch = useDispatch()
+      const params = useSearchParams()
+      const router = useRouter()
 
 
    useEffect(() => {
-      return () => {
-         dispatch(clearFilters())
-      }
-   }, []);
-
-
-   useEffect(() => {
-      postFetch("/api/filteredProducts", filters).then(data => {
+      postFetch("/api/filteredProducts", fillFilterObject(qs.parse(params.toString()))).then(data => {
          setFilteredProducts(data)
       }).catch(e => console.log(e))
-   }, [filters]);
+   }, [params]);
+
+   if(filteredProducts.length === 0) {
+      return  (
+          <div className={'flex flex-col gap-1 justify-center items-center h-[70vh] w-full'}>
+             <img src="/empty-box.png" alt="" className={'h-24 w-24'}/>
+             <span className="text-3xl font-medium">Couldn&apos;t find the product!</span>
+             <button className="bg-black text-white font-bold px-4 py-2 rounded-lg mt-6 hover:bg-gray-700" onClick={() => router.push("/store")}>Reset Filters
+             </button>
+          </div>
+      )
+   }
 
    return (
        <div className="grid grid-cols-2 lg:grid-cols-3 w-full gap-y-6 gap-5 text-black mb-10">

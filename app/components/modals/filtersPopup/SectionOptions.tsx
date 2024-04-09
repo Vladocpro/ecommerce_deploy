@@ -13,7 +13,6 @@ interface SectionOptionsProps {
 
 const SectionOptions : FC<SectionOptionsProps> = ({handleChange, category,  options, tempFilters}) => {
 
-
    // @ts-ignore
    const isChecked : boolean = useCallback((title : string)  => {
       switch (category) {

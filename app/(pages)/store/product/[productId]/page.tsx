@@ -61,13 +61,13 @@ const Home =  () => {
    const buttonClick = async  (action : ButtonAction) => {
 
       if(!product) {
-         dispatch(setToastPopup({visible: true, message: "Please reload the page", position: ToastPositions.AUTH, type: ToastType.ERROR, duration: 2000}))
+         dispatch(setToastPopup({visible: true, message: "Please reload the page", position: ToastPositions.AUTH, type: ToastType.ERROR, duration: 5000}))
          return
       }
 
       if(action === ButtonAction.ADDTOBAG) {
          if(sizes.length === 0) {
-            dispatch(setToastPopup({visible: true, message: "You need to select sizes", position: ToastPositions.AUTH, type: ToastType.ERROR, duration: 2000}))
+            dispatch(setToastPopup({visible: true, message: "Please select your size", position: ToastPositions.AUTH, type: ToastType.ERROR, duration: 5000}))
             return
          }
          setSizes([])
@@ -75,10 +75,11 @@ const Home =  () => {
          if(response?.data.error) {
             if(response.data.error === "Log into your account") {
                dispatch(setAuthPopup(true))
+            } else {
+                dispatch(setToastPopup({visible: true, message: response.data.error, position: ToastPositions.AUTH, type: ToastType.ERROR, duration: 5000}))
             }
-            // dispatch(setToastPopup({visible: true, message: response.data.error, position: ToastPositions.AUTH, type: ToastType.ERROR, duration: 2000}))
          } else {
-            dispatch(setToastPopup({visible: true, message: response?.data.message, position: ToastPositions.AUTH, type: ToastType.BLACK, duration: 2000}))
+            dispatch(setToastPopup({visible: true, message: response?.data.message, position: ToastPositions.AUTH, type: ToastType.BLACK, duration: 2500}))
          }
       }
       if(action === ButtonAction.ADDTOFAV) {
@@ -89,7 +90,7 @@ const Home =  () => {
             }
             // dispatch(setToastPopup({visible: true, message: response.data.error, position: ToastPositions.AUTH, type: ToastType.ERROR, duration: 2000}))
          } else {
-            dispatch(setToastPopup({visible: true, message: response?.data.message, position: ToastPositions.AUTH, type: ToastType.BLACK, duration: 2000}))
+            dispatch(setToastPopup({visible: true, message: response?.data.message, position: ToastPositions.AUTH, type: ToastType.BLACK, duration: 2500}))
          }
       }
    };
@@ -195,7 +196,7 @@ const Home =  () => {
                    ))}
                 </ul>
                 <div className="flex flex-col gap-y-2 w-full">
-                   <button onClick={() => buttonClick(ButtonAction.ADDTOBAG)} className="bg-black text-white rounded-full transition-all duration-200 py-[18px] hover:bg-gray-500">Add to Bag</button>
+                   <button onClick={() => buttonClick(ButtonAction.ADDTOBAG)} className="bg-black text-white rounded-full transition-all duration-200 py-[18px] hover:bg-gray-500">Add to Cart</button>
                    <button onClick={() => buttonClick(ButtonAction.ADDTOFAV)} className="border-2 border-gray-300 hover:border-black transition-all duration-100 rounded-full py-4">Add to Favorite</button>
                 </div>
              </div>

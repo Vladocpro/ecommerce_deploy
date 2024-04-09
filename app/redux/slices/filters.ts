@@ -13,7 +13,7 @@ export interface IFiltersState {
    sizes: string[],
 }
 
-const initialState : IFiltersState = {
+export const initialFiltersState : IFiltersState = {
    sortBy: null,
    search: null,
    sale: false,
@@ -26,7 +26,7 @@ const initialState : IFiltersState = {
 
 const filtersSlice = createSlice({
    name: 'filters',
-   initialState,
+   initialState: initialFiltersState,
    reducers: {
       setSale: (state, action: PayloadAction<boolean>) => {
          state.sale = action.payload;
