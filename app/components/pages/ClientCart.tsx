@@ -5,7 +5,7 @@ import React, {FC, useEffect, useState} from 'react';
 import Image from "next/image";
 import {Product, User} from "../../types";
 import PriceComponent from "../PriceComponent";
-import {getFetch, postFetch} from "../../../lib/fetcher";
+import {postFetch} from "../../../lib/fetcher";
 import Link from "next/link";
 import {setToastPopup, ToastPositions, ToastType} from "../../redux/slices/modals";
 import axios from "axios";

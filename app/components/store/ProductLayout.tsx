@@ -7,19 +7,16 @@ import Link from "next/link";
 import PriceComponent from "../PriceComponent";
 import {Product} from "../../types";
 import {postFetch} from "../../../lib/fetcher";
-import {useDispatch, useSelector} from "react-redux";
-import {clearFilters, IFiltersState, setFilters} from "../../redux/slices/filters";
-import {RootState} from "../../redux/store";
+import { IFiltersState} from "../../redux/slices/filters";
 import {useRouter, useSearchParams} from "next/navigation";
 import qs from "query-string";
-import {updatePropertyArray} from "../dropdown/DropDownOptions";
 
 interface ProductLayoutProps {
    products: Product[]
 }
 
 export const fillFilterObject = (filters: any) => {
-   let initialBody : IFiltersState = {
+   let initialBody: IFiltersState  = {
       sortBy: null,
       search: null,
       sale: false,
@@ -32,8 +29,10 @@ export const fillFilterObject = (filters: any) => {
    for (let key in initialBody) {
       if (key in filters) {
          if(typeof filters[key] === "string" && ["price", "category","gender","sizes"].some((category) => category === key)) {
+            // @ts-ignore
             initialBody[key].push(filters[key])
          } else {
+            // @ts-ignore
             initialBody[key] = filters[key];
          }
       }
@@ -50,7 +49,8 @@ const ProductLayout: FC<ProductLayoutProps> = ({products}) => {
 
 
    useEffect(() => {
-      postFetch("/api/filteredProducts", fillFilterObject(qs.parse(params.toString()))).then(data => {
+      // @ts-ignore
+      postFetch("/api/filteredProducts", fillFilterObject(qs.parse(params?.toString()))).then(data => {
          setFilteredProducts(data)
       }).catch(e => console.log(e))
    }, [params]);

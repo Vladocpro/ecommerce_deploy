@@ -1,14 +1,9 @@
 "use client"
 
 import React, {FC, useEffect, useRef, useState} from 'react';
-import DropDown from "./DropDown";
-import {useDispatch} from "react-redux";
-import {setSortBy} from "../../redux/slices/filters";
-import {store} from "../../redux/store";
 import {useRouter, useSearchParams} from "next/navigation";
 import useClickOutside from "../useClickOutside";
 import qs from "query-string";
-import debounce from "lodash.debounce";
 
 interface DropDownSelectProps {
    containerStyles? :string,

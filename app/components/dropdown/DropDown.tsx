@@ -1,6 +1,6 @@
 "use client"
 
-import React, {FC, useEffect, useRef, useState} from 'react';
+import React, {FC} from 'react';
 
 interface DropDownProps {
    title: string,

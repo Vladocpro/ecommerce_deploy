@@ -1,6 +1,6 @@
 "use client"
 
-import React, {FC, useEffect, useMemo, useState} from 'react';
+import React, {FC, useMemo, useState} from 'react';
 import  {useRouter, useSearchParams} from "next/navigation";
 import qs from "query-string"
 
@@ -18,8 +18,7 @@ interface DropDownOptionsProps {
 const inputIsChecked = (filters: string | string[] | boolean, category: string, title: string | boolean) : boolean => {
    if(filters === undefined) return  false
    if(category === "sale") {
-      if(filters === "true") return true
-      else return false
+      return filters === "true";
    }
    if(Array.isArray(filters)) {
       if(title === "Under £50") {

@@ -1,6 +1,4 @@
-import getCurrentUser from "../../actions/getCurrentUser";
 import {NextResponse} from "next/server";
-import prisma from "../../../lib/prismadb";
 import Stripe from "stripe"
 import * as process from "process";
 

@@ -6,7 +6,6 @@ import {RootState} from "../../redux/store";
 import Image from "next/image";
 import {
    closeSelectSizePopup,
-   setSelectSizePopup,
    setToastPopup,
    ToastPositions,
    ToastType

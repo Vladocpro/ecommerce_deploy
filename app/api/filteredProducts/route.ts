@@ -2,8 +2,6 @@
 import prisma from "../../../lib/prismadb";
 import {NextResponse} from "next/server";
 import {Product} from "../../types";
-import qs from "query-string";
-import {IFiltersState} from "./app/redux/slices/filters";
 
 interface ISize {
    title: string,

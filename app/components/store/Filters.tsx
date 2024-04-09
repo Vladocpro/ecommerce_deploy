@@ -25,7 +25,7 @@ const Filters = () => {
       }
 
       let updatedQuery: any = Object.assign({}, currentQuery)
-      if(searchValue === "") {
+      if(searchValue.trim() === "") {
          updatedQuery.search = null
       } else {
          updatedQuery.search = searchValue

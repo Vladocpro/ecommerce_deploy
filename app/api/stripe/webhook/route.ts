@@ -1,6 +1,5 @@
 //@ts-nocheck
 import { headers } from "next/headers"
-import * as stripe from "stripe";
 import Stripe from "stripe";
 import * as process from "process";
 import prisma from "../../../../lib/prismadb";

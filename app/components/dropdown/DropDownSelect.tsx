@@ -1,11 +1,8 @@
 "use client"
 
-import React, {FC, useEffect, useRef, useState} from 'react';
-import DropDown from "./DropDown";
+import React, {FC, useRef, useState} from 'react';
 import {useDispatch} from "react-redux";
 import {setSortBy} from "../../redux/slices/filters";
-import {store} from "../../redux/store";
-import {useRouter} from "next/navigation";
 import useClickOutside from "../useClickOutside";
 
 interface DropDownSelectProps {

@@ -2,15 +2,12 @@
 
 import React, {useEffect, useRef, useState} from 'react';
 import {Product} from "@prisma/client";
-import {useParams, useRouter} from "next/navigation";
-import {getFetch, postFetch} from "../../../../../lib/fetcher";
+import {useParams} from "next/navigation";
+import {getFetch} from "../../../../../lib/fetcher";
 import Image from "next/image";
-import {useDispatch, useSelector} from "react-redux";
-import {clearChosenSizes, pushChosenSize} from "../../../../redux/slices/product";
+import {useDispatch} from "react-redux";
 import axios from "axios";
-import {store} from "../../../../redux/store";
 import {setAuthPopup, setToastPopup, ToastPositions, ToastType} from "../../../../redux/slices/modals";
-import Slider from "../../../../components/Slider";
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
 import PriceComponent from "../../../../components/PriceComponent";

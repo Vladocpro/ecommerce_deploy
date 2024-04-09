@@ -1,6 +1,6 @@
 "use client"
 
-import React, {FC, useCallback, useMemo} from 'react';
+import React, {FC, useCallback} from 'react';
 import {IFiltersState} from "../../../redux/slices/filters";
 
 

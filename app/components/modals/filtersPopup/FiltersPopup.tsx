@@ -1,6 +1,6 @@
 "use client"
 
-import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
+import React, {useEffect, useMemo, useRef, useState} from 'react';
 import {useDispatch, useSelector} from "react-redux";
 import {RootState} from "../../../redux/store";
 import {setFiltersPopup} from "../../../redux/slices/modals";
@@ -63,11 +63,15 @@ const FiltersPopup = () => {
    }
 
    const applyFilters = () => {
+      let requestFilters = Object.assign({}, tempFilters)
+      if(tempFilters.search?.trim() === "") {
+         requestFilters.search = null
+      }
 
       const url = qs.stringifyUrl({
          url: "/store",
          // @ts-ignore
-         query: tempFilters
+         query: requestFilters
       }, {skipNull: true})
 
       router.push(url)

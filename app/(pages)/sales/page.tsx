@@ -1,10 +1,8 @@
 "use client"
 
 import React, {useEffect, useState} from 'react';
-import { CldImage } from 'next-cloudinary';
 import Image from "next/image";
-import {getFetch,postFetch} from "../../../lib/fetcher";
-import ProductLayout from "../../components/store/ProductLayout";
+import {getFetch} from "../../../lib/fetcher";
 import {Product} from "../../types";
 import Link from "next/link";
 import PriceComponent from "../../components/PriceComponent";

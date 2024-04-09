@@ -1,10 +1,8 @@
 "use client"
 
-import React, {FC, useEffect} from 'react';
-import Link from "next/link";
+import React, {FC} from 'react';
 import {setAuthPopup} from "../../redux/slices/modals";
 import Tooltip from "../Tooltip";
-import getCurrentUser from "../../actions/getCurrentUser";
 import AuthButton from "./AuthButton";
 import {User} from "../../types";
 import { useRouter } from "next/navigation";

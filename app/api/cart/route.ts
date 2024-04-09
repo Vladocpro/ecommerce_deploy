@@ -3,8 +3,6 @@ import { NextResponse } from "next/server";
 
 import getCurrentUser from "../../actions/getCurrentUser";
 import prisma from "../../../lib/prismadb";
-import {Product, User} from "@prisma/client";
-
 
 
 export async function PATCH(req: Request) {

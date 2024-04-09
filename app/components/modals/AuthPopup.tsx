@@ -3,13 +3,11 @@
 import React, {useState} from 'react';
 import {useDispatch, useSelector} from "react-redux";
 import {RootState} from "../../redux/store";
-import {closeToastPopup, setAuthPopup, setToastPopup, ToastPositions, ToastType} from "../../redux/slices/modals";
+import {setAuthPopup, setToastPopup, ToastPositions, ToastType} from "../../redux/slices/modals";
 import {useForm} from "react-hook-form";
 import {LoginForm} from "../../types";
 import {postFetch} from "../../../lib/fetcher";
-import {setAuthData} from "../../redux/slices/auth";
 import {signIn} from "next-auth/react";
-import {callback} from "next-auth/core/routes";
 import { useRouter } from "next/navigation";
 
 const AuthPopup = () => {

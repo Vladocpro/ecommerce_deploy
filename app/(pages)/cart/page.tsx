@@ -2,8 +2,6 @@
 
 import React from 'react';
 import getCurrentUser from "../../actions/getCurrentUser";
-import Image from "next/image";
-import {Product, User} from "../../types";
 import ClientCart from "../../components/pages/ClientCart";
 
 const Home =  async () => {

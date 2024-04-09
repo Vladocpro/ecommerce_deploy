@@ -1,6 +1,5 @@
 
 import Link from "next/link";
-import Slider from "./components/Slider";
 
 export default async function Home() {
 

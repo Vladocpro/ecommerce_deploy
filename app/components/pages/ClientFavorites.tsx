@@ -1,6 +1,6 @@
 "use client"
 
-import React, {FC, useEffect, useState} from 'react';
+import React, {FC, useState} from 'react';
 import {Product, User} from "../../types";
 import {useDispatch} from "react-redux";
 import axios from "axios";
@@ -8,7 +8,6 @@ import {setSelectSizePopup, setToastPopup, ToastPositions, ToastType} from "../.
 import Link from "next/link";
 import Image from "next/image";
 import PriceComponent from "../PriceComponent";
-import Tooltip from "../../components/Tooltip";
 
 interface ClientFavoritesProps {
    user : User
