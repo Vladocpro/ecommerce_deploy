@@ -17,7 +17,7 @@ const Header =  async () => {
                 </svg>
              </Link>
 
-             <div className="hidden  space-x-20 font-semibold text-lg sm:block">
+             <div className="hidden  space-x-20 font-semibold text-lg lg:block">
                 <Link className="headerLinks" href="/store">Store</Link>
                 <Link className="headerLinks" href="/sales">Sales</Link>
              </div>

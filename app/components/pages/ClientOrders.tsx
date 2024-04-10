@@ -4,7 +4,6 @@ import React, {FC, useEffect, useState} from 'react';
 import {Order, User} from "../../types";
 import {useDispatch} from "react-redux";
 import {useRouter} from "next/navigation";
-import {getFetch} from "../../../lib/fetcher";
 import debounce from "lodash.debounce";
 import getSymbolFromCurrency from "currency-symbol-map";
 import Image from "next/image";

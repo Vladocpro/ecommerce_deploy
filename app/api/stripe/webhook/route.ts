@@ -1,6 +1,5 @@
 //@ts-nocheck
 import { headers } from "next/headers"
-import * as stripe from "stripe";
 import Stripe from "stripe";
 import * as process from "process";
 import prisma from "../../../../lib/prismadb";
@@ -12,10 +11,10 @@ async function getCartItems(lineItems : any, stripe : any) {
 
       lineItems?.data?.forEach(async (item : any) => {
          const product = await stripe.products.retrieve(item.price.product);
-         const productId = product.metadata.productId;
 
          cartItems.push({
-            productId,
+            productId: product.metadata.productId,
+            size: product.metadata.size,
             name: product.name,
             price: item.price.unit_amount_decimal / 100,
             quantity: item.quantity,
@@ -35,8 +34,6 @@ export async function POST(req: Request) {
    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
       apiVersion: "2022-11-15"
    })
-
-
 
    let event: Stripe.Event
 
@@ -58,31 +55,70 @@ export async function POST(req: Request) {
 
       const date = new Date(session.created * 1000);
       const formattedDate = `${date.getDate()} ${date.toLocaleString('default', { month: 'short' })} ${date.getFullYear()}`;
-      await prisma.order.create({
-         data: {
-            userId: session.client_reference_id,
-            items: orderItems,
-            amountSubtotal: session.amount_subtotal / 100,
-            shipping: session.shipping_cost?.amount_total,
-            amountTotal: session.amount_total / 100,
-            date: formattedDate,
-            currency: session.currency,
-            paymentIntent: session.payment_intent,
-            sessionId: session.id
-         },
-      })
+      try {
+         await prisma.order.create({
+            data: {
+               userId: session.client_reference_id,
+               items: orderItems,
+               amountSubtotal: session.amount_subtotal / 100,
+               shipping: session.shipping_cost?.amount_total,
+               amountTotal: session.amount_total / 100,
+               date: formattedDate,
+               currency: session.currency,
+               paymentIntent: session.payment_intent,
+               sessionId: session.id
+            },
+         })
+      } catch (error) {
+         return new Response(`Unable to create User Order: ${error.message}`, { status: 500 })
+      }
 
-      //delete items from cart
-      await prisma.user.update({
-         where: {
-            id: session.client_reference_id
-         },
-         data: {
-            cart: {
-               set: []
+      try {
+         //delete items from cart
+         await prisma.user.update({
+            where: {
+               id: session.client_reference_id
+            },
+            data: {
+               cart: {
+                  set: []
+               }
             }
+         })
+      } catch (error) {
+         return new Response(`Unable to delete items from User Cart: ${error.message}`, { status: 500 })
+      }
+
+      try {
+         // Subtract quantity in DB
+         for (const item of orderItems) {
+            const product = await prisma.product.findUnique({
+               where: { id: item.productId },
+            });
+
+            if (!product) {
+               console.log(`Product with id ${item.id} not found`);
+               continue;
+            }
+
+            const updatedSizes = product.sizes.map((size) => {
+               if (size.title === item.size) {
+                  return {
+                     ...size,
+                     quantity: size.quantity - item.quantity,
+                  };
+               }
+               return size;
+            });
+
+            await prisma.product.update({
+               where: { id: item.productId },
+               data: { sizes: updatedSizes },
+            });
          }
-      })
+      } catch (error) {
+         return new Response(`Unable to Subtract quantity in DB: ${error.message}`, { status: 500 })
+      }
    }
 
 

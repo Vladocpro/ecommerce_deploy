@@ -1,4 +1,3 @@
-
 export type User = {
    id:            string,
    email?:         string,
@@ -15,8 +14,8 @@ export type Product = {
    title       :string,
    description :string,
    price       :number
-   sizes       :string[],
-   images      :{title: string, isAvailable: boolean}[],
+   sizes       :{title: string, quantity: number}[],
+   images      :string[],
    category    :String,
    gender      :string,
    sale        :number,
@@ -45,3 +44,12 @@ export type Auth = {
    email: string,
    password: string,
 }
+export type IFiltersState = {
+   sortBy: string |null,
+   search: string |null,
+   sale: boolean,
+   price: string[],
+   category: string[],
+   gender: string[],
+   sizes: string[],
+};

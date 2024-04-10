@@ -1,7 +1,7 @@
 "use client"
 
-import React, {FC, useCallback, useMemo} from 'react';
-import {IFiltersState} from "../../../redux/slices/filters";
+import React, {FC, useCallback} from 'react';
+import {IFiltersState} from "../../../types";
 
 
 interface SectionOptionsProps {
@@ -12,7 +12,6 @@ interface SectionOptionsProps {
 }
 
 const SectionOptions : FC<SectionOptionsProps> = ({handleChange, category,  options, tempFilters}) => {
-
 
    // @ts-ignore
    const isChecked : boolean = useCallback((title : string)  => {

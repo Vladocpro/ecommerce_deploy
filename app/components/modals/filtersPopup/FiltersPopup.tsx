@@ -1,21 +1,16 @@
 "use client"
 
-import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
+import React, {useEffect, useMemo, useRef, useState} from 'react';
 import {useDispatch, useSelector} from "react-redux";
 import {RootState} from "../../../redux/store";
 import {setFiltersPopup} from "../../../redux/slices/modals";
-import {
-   IFiltersState,
-   setCategory, setFilters,
-   setGender,
-   setPrice,
-   setSale,
-   setSearch,
-   setSizes
-} from "../../../redux/slices/filters";
 import debounce from "lodash.debounce";
 import FilterSectionContainer from "./FilterSectionContainer";
 import SectionOptions from "./SectionOptions";
+import { useRouter, useSearchParams } from 'next/navigation';
+import qs from "query-string";
+import {IFiltersState} from "../../../types";
+import {fillFilterObject} from "../../../constants";
 
 const defaultFilterState = {
    sortBy: null,
@@ -31,19 +26,11 @@ const sizes= ["XS","S","M","L","XL","2XL","3XL","UK 5.5","UK 6","UK 6.5","UK 7",
 const FiltersPopup = () => {
 
    const isOpen: boolean = useSelector((state: RootState) => state.modals.filtersPopup)
-   const inputRef = useRef(null);
-   const sortByRef = useRef(null);
-   const sortByRef2 = useRef(null);
-   const sortByRef3 = useRef(null);
+   const inputRef = useRef<HTMLInputElement | null>(null);
    const [tempFilters, setTempFilters] = useState<IFiltersState>(defaultFilterState)
    const dispatch = useDispatch()
-
-
-   useEffect(() => {
-      if(isOpen)
-         window.scrollTo(0, 0)
-   }, [isOpen]);
-
+   const router = useRouter()
+   const params = useSearchParams()
 
    const filtersCount : number = useMemo(() => {
       let counter = 0;
@@ -74,25 +61,27 @@ const FiltersPopup = () => {
    }
 
    const applyFilters = () => {
-      dispatch(setFilters(tempFilters))
+      let requestFilters = Object.assign({}, tempFilters)
+      if(tempFilters.search?.trim() === "") {
+         requestFilters.search = null
+      }
+
+      const url = qs.stringifyUrl({
+         url: "/store",
+         // @ts-ignore
+         query: requestFilters
+      }, {skipNull: true})
+
+      router.push(url)
       dispatch(setFiltersPopup(false))
    }
    const clearFilters= () => {
-      setTempFilters(defaultFilterState)
       if (inputRef && inputRef.current) {
-         //@ts-ignore
          inputRef.current.value = "";
       }
-      if (sortByRef && sortByRef.current) {
-         //@ts-ignore
-         sortByRef.current.checked = false;
-         //@ts-ignore
-         sortByRef2.current.checked = false;
-         //@ts-ignore
-         sortByRef3.current.checked = false;
-      }
+      setTempFilters(defaultFilterState)
+      router.push("/store")
    }
-
    const handleChange = (event: any, category: string, title: string) => {
       switch (category) {
          case "sale": {
@@ -140,6 +129,39 @@ const FiltersPopup = () => {
       }
    }
 
+   useEffect(() => {
+      if(inputRef.current === null) return;
+      const parsedParams  = qs.parse(params?.toString() as string);
+      if(params?.toString() === "") {
+         clearFilters()
+         return
+      }
+      const filters: IFiltersState = fillFilterObject(parsedParams)
+      if(parsedParams.search  === undefined || parsedParams.search  === null || parsedParams.search === "") {
+         filters.search = ""
+         inputRef.current.value = ""
+      } else {
+         // @ts-ignore
+         filters.search = parsedParams.search;
+         // @ts-ignore
+         inputRef.current.value = parsedParams.search
+      }
+
+      if(parsedParams.sortBy  === undefined || parsedParams.sortBy  === null || parsedParams.sortBy === "") {
+          filters.sortBy = null
+      } else {
+         // @ts-ignore
+         filters.sortBy = parsedParams.sortBy
+      }
+      filters.sale = parsedParams.sale === "true";
+      setTempFilters(filters)
+   }, [params]);
+
+   useEffect(() => {
+      if(isOpen)
+         window.scrollTo(0, 0)
+   }, [isOpen]);
+
    return (
           <div className={`bg-white overflow-x-hidden overflow-y-scroll text-black fixed flex flex-col gap-5 z-20 inset-0 transition-all duration-[400ms] ${isOpen ? "translate-y-0 visible" : "translate-y-[100%] invisible"}`}>
 
@@ -157,23 +179,23 @@ const FiltersPopup = () => {
                       <path stroke="currentColor" strokeWidth="1.5"
                             d="M13.962 16.296a6.716 6.716 0 01-3.462.954 6.728 6.728 0 01-4.773-1.977A6.728 6.728 0 013.75 10.5c0-1.864.755-3.551 1.977-4.773A6.728 6.728 0 0110.5 3.75c1.864 0 3.551.755 4.773 1.977A6.728 6.728 0 0117.25 10.5a6.726 6.726 0 01-.921 3.407c-.517.882-.434 1.988.289 2.711l3.853 3.853"></path>
                    </svg>
-                   <input  type="text" onChange={(e) => handleSearchChange(e)} ref={inputRef} className="bg-gray-100  pl-9 pr-5 outline-black text-base focus:placeholder:text-gray-900 hover:placeholder:text-gray-900 hover:bg-gray-200 focus:bg-gray-200 py-2 rounded-full" placeholder="Search"/>
+                   <input  type="text" onChange={(e) => handleSearchChange(e)} ref={inputRef} className="bg-gray-100  pl-9 pr-5 w-full outline-black text-base focus:placeholder:text-gray-900 hover:placeholder:text-gray-900 hover:bg-gray-200 focus:bg-gray-200 py-2 rounded-full" placeholder="Search"/>
                 </div>
              </FilterSectionContainer>
 
              <FilterSectionContainer title="Sort By">
                 <form className="flex flex-col gap-3 mt-4">
-                   <div className="flex items-center">
-                      <input type="radio" id="featuredInput"  className="h-5 w-5" name="fav_language" value="Featured" ref={sortByRef}/>
-                      <label htmlFor="featuredInput" className="ml-3" onClick={() => setTempFilters({...tempFilters, sortBy: null})} >Featured</label>
+                   <div className="flex items-center cursor-pointer" onClick={() => setTempFilters({...tempFilters, sortBy: "Featured"})}>
+                      <input type="radio" readOnly id="featuredInput"  className="h-5 w-5" name="fav_language" value="Featured" checked={tempFilters.sortBy === "Featured"}/>
+                      <label htmlFor="featuredInput" className="ml-3">Featured</label>
                    </div>
-                   <div className="flex items-center">
-                      <input type="radio" id="highLowInput" className="h-5 w-5" name="fav_language" value="Price: High-Low" ref={sortByRef2}/>
-                      <label htmlFor="highLowInput" className="ml-3" onClick={() => setTempFilters({...tempFilters, sortBy: "desc"})}>Price: High-Low</label>
+                   <div className="flex items-center cursor-pointer" onClick={() => setTempFilters({...tempFilters, sortBy: "Price: High-Low"})}>
+                      <input type="radio" readOnly id="highLowInput" className="h-5 w-5" name="fav_language" value="Price: High-Low" checked={tempFilters.sortBy === "Price: High-Low"}/>
+                      <label htmlFor="highLowInput" className="ml-3">Price: High-Low</label>
                    </div>
-                   <div className="flex items-center">
-                      <input type="radio" id="lowHighInput" className="h-5 w-5" name="fav_language" value="Price: Low-High" ref={sortByRef3}/>
-                      <label htmlFor="lowHighInput" className="ml-3" onClick={() => setTempFilters({...tempFilters, sortBy: "asc"})}>Price: Low-High</label>
+                   <div className="flex items-center cursor-pointer" onClick={() => setTempFilters({...tempFilters, sortBy: "Price: Low-High"})}>
+                      <input type="radio" readOnly id="lowHighInput" className="h-5 w-5" name="fav_language" value="Price: Low-High" checked={tempFilters.sortBy === "Price: Low-High"}/>
+                      <label htmlFor="lowHighInput" className="ml-3">Price: Low-High</label>
                    </div>
                 </form>
              </FilterSectionContainer>
@@ -197,7 +219,7 @@ const FiltersPopup = () => {
              <FilterSectionContainer title="Sizes">
                 <ul className="flex flex-wrap gap-2 mt-4">
                    {sizes.map((size, index) =>  (
-                       <li key={index} onClick={() => {handleChange(event,"sizes", size)}} className={`flex items-center justify-center h-[46px] w-[75px] border-2 ${tempFilters.sizes.includes(size) ? "border-black" : " border-gray-300"}   rounded-lg  transition-all duration-100`}>
+                       <li key={index} onClick={() => {handleChange(event,"sizes", size)}} className={`flex items-center justify-center h-[46px] w-[75px] cursor-pointer border-2 ${tempFilters.sizes.includes(size) ? "border-black" : " border-gray-300"}   rounded-lg  transition-all duration-100`}>
                          <span className="select-none ">
                             {size}
                          </span>
@@ -211,7 +233,6 @@ const FiltersPopup = () => {
              <div className="sticky h-16 overflow-y-hidden bottom-0 px-2 w-full bg-gray-100  flex gap-4 pt-2 pb-[52px] justify-between">
                 <button className="h-[39px]  bg-white w-full rounded-2xl  border-[1.5px] border-gray-300" onClick={() => {
                    clearFilters();
-                   dispatch(setFilters(defaultFilterState))
                 }}>
                    Clear ({filtersCount})
                 </button>

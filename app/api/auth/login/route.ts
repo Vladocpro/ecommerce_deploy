@@ -1,8 +1,7 @@
 import bcrypt from "bcrypt";
 import client  from "../../../../lib/prismadb";
 import {NextResponse} from "next/server";
-import {SignJWT} from "jose";
-import {createJWT, getJwtSecretKey} from "../../../../lib/auth";
+import {createJWT} from "../../../../lib/auth";
 export async function POST(req : any, res : NextResponse) {
    try {
       const body = await req.json();

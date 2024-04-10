@@ -1,6 +1,4 @@
-import getCurrentUser from "../../actions/getCurrentUser";
 import {NextResponse} from "next/server";
-import prisma from "../../../lib/prismadb";
 import Stripe from "stripe"
 import * as process from "process";
 
@@ -20,6 +18,7 @@ export async function POST(req: Request) {
                images: item.images,
                metadata: {
                   productId: item.id,
+                  size: item.size
                },
             },
             unit_amount: Math.round(Number((item.price - ((item.price * item.sale) / 100)).toFixed(2)) * 100),

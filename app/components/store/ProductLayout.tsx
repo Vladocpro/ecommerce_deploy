@@ -7,45 +7,45 @@ import Link from "next/link";
 import PriceComponent from "../PriceComponent";
 import {Product} from "../../types";
 import {postFetch} from "../../../lib/fetcher";
-import {useDispatch, useSelector} from "react-redux";
-import {clearFilters, IFiltersState, setFilters} from "../../redux/slices/filters";
-import {RootState} from "../../redux/store";
+import { IFiltersState} from "../../types";
+import {useRouter, useSearchParams} from "next/navigation";
+import qs from "query-string";
+import {fillFilterObject} from "../../constants";
 
 interface ProductLayoutProps {
    products: Product[]
 }
 
+
 const ProductLayout: FC<ProductLayoutProps> = ({products}) => {
+      const router = useRouter()
 
-      const [filteredProducts, setFilteredProducts] = useState<Product[]>(products)
-      const filters = useSelector((state : RootState) => state.filters)
-      const dispatch = useDispatch()
-
-
-   useEffect(() => {
-      return () => {
-         dispatch(clearFilters())
-      }
-   }, []);
-
-
-   useEffect(() => {
-      postFetch("/api/filteredProducts", filters).then(data => {
-         setFilteredProducts(data)
-      }).catch(e => console.log(e))
-   }, [filters]);
+   if(products.length === 0) {
+      return  (
+          <div className={'flex flex-col gap-1 justify-center items-center h-[70vh] w-full'}>
+             <img src="/empty-box.png" alt="" className={'h-24 w-24'}/>
+             <span className="text-3xl font-medium">Couldn&apos;t find the product!</span>
+             <button className="bg-black text-white font-bold px-4 py-2 rounded-lg mt-6 hover:bg-gray-700" onClick={() => router.push("/store")}>Reset Filters
+             </button>
+          </div>
+      )
+   }
 
    return (
        <div className="grid grid-cols-2 lg:grid-cols-3 w-full gap-y-6 gap-5 text-black mb-10">
-          {filteredProducts.map((product : Product) => (
+          {products.map((product : Product) => (
               <div key={product.id} className="">
                  <Link  href={`/store/product/${product.id}`} className="w-full ">
                     <Image
-                        className="w-full  object-cover pointer-events-none select-none"
-                        // fill
+                        className="data-[loaded=false]:animate-pulse data-[loaded=false]:bg-gray-100/10 w-full  object-cover pointer-events-none select-none"
+                        // fill={}
                         priority={true}
                         height={620}
                         width={600}
+                        // @ts-ignore
+                        onLoad={event => {
+                           event.currentTarget.setAttribute('data-loaded', 'true')
+                        }}
                         // @ts-ignore
                         src={product.images[0]}
                         alt="Image"
