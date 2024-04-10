@@ -28,7 +28,7 @@ export async function getUserAndOrder(sessionId : string) {
          sessionId: sessionId
       }
    })
-   if(user.id !== order.userId) {
+   if(user.id !== order?.userId) {
       return {error: "Access Denied, log into your account"}
 
    }

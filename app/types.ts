@@ -14,8 +14,8 @@ export type Product = {
    title       :string,
    description :string,
    price       :number
-   sizes       :string[],
-   images      :{title: string, isAvailable: boolean}[],
+   sizes       :{title: string, quantity: number}[],
+   images      :string[],
    category    :String,
    gender      :string,
    sale        :number,

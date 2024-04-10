@@ -38,7 +38,7 @@ const SelectSizePopup = () => {
    return (
        <div className={`flex items-center justify-center cartPage:items-end fixed inset-0 z-20 transition-all duration-300 ${selectSizePopup.isOpen ? "visible" : "invisible opacity-0"}`}>
           <div className={`absolute inset-0 z-30 bg-[rgba(111,111,111,0.5)] transition-all duration-300 h-full w-full ${selectSizePopup.isOpen ? "visible" : "invisible opacity-0"}`} onClick={() => dispatch(closeSelectSizePopup())}/>
-          <div className={`relative z-30 p-5 bg-white rounded-lg  transition-all  duration-300 ${selectSizePopup.isOpen ? "translate-y-0" : "-translate-y-32 opacity-0"}`}>
+          <div className={`relative z-30 p-5 bg-white rounded-lg  transition-all  duration-300 ${selectSizePopup.isOpen ? "translate-y-0 md:scale-100 opacity-100" : "-translate-y-20 md:scale-50 opacity-0"}`}>
              {selectSizePopup.product === null ?
                  (<div className="h-[420px] w-[790px]"></div>)
                  :
@@ -58,7 +58,7 @@ const SelectSizePopup = () => {
 
                         <div className="flex flex-col ">
                            <div className="flex flex-col mb-4 cartPage:text-center">
-                              <span className="text-2xl">{selectSizePopup.product.title}</span>
+                              <span className="text-2xl font-medium">{selectSizePopup.product.title}</span>
                               <span className="text-lg text-gray-500">{selectSizePopup.product.category}</span>
                            </div>
                            <ul className="grid grid-cols-3 cartPage:flex cartPage:overflow-x-scroll cartPage:overflow-y-hidden cartPage:scrollbar-hide mt-auto gap-x-6 gap-y-2.5 w-[350px] cartPage:w-[95vw] ">
@@ -71,7 +71,7 @@ const SelectSizePopup = () => {
                                      else
                                         setSizes([...sizes, size.title])
                                   }}
-                                       key={size.title} className={`flex items-center justify-center h-[46px] border-2 ${sizes.includes(size.title) ? "border-black" : " border-gray-300"}  ${!size.isAvailable ? " bg-gray-100 text-gray-300" : "hover:border-black cursor-pointer"}  rounded-lg  transition-all duration-100`}>
+                                       key={size.title} className={`flex items-center justify-center h-[46px] border-2 ${sizes.includes(size.title) ? "border-black" : " border-gray-300"}  ${!size.isAvailable ? " bg-gray-100 text-gray-300" : "hover:border-black cursor-pointer"}  rounded-lg font-medium transition-all duration-100`}>
                                <span className="select-none  cartPage:w-24 cartPage:text-center">
                                   {size.title}
                                </span>
@@ -79,7 +79,7 @@ const SelectSizePopup = () => {
                               ))}
                            </ul>
 
-                           <button className="flex-shrink bg-black text-white rounded-full transition-all duration-200 py-[15px] mt-4 hover:bg-gray-500" onClick={() => addToBag()}>Add to Bag</button>
+                           <button className="flex-shrink bg-black text-white rounded-full transition-all duration-200 py-[15px] mt-4 hover:bg-gray-500 font-medium" onClick={() => addToBag()}>Add to Bag</button>
                         </div>
 
                      </div>

@@ -9,8 +9,8 @@ import FilterSectionContainer from "./FilterSectionContainer";
 import SectionOptions from "./SectionOptions";
 import { useRouter, useSearchParams } from 'next/navigation';
 import qs from "query-string";
-import {fillFilterObject} from "../../store/ProductLayout";
 import {IFiltersState} from "../../../types";
+import {fillFilterObject} from "../../../constants";
 
 const defaultFilterState = {
    sortBy: null,

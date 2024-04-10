@@ -18,6 +18,7 @@ export async function POST(req: Request) {
                images: item.images,
                metadata: {
                   productId: item.id,
+                  size: item.size
                },
             },
             unit_amount: Math.round(Number((item.price - ((item.price * item.sale) / 100)).toFixed(2)) * 100),

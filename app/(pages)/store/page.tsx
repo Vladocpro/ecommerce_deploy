@@ -4,10 +4,16 @@ import DropDownOptions from "../../components/dropdown/DropDownOptions";
 import ProductLayout from "../../components/store/ProductLayout";
 import Filters from "../../components/store/Filters";
 import FiltersPopup from "../../components/modals/filtersPopup/FiltersPopup";
+import { IFiltersState } from '../../types';
+import {fillFilterObject} from "../../constants";
 
-const Store = async () => {
+type Props = {
+   searchParams: IFiltersState
+}
 
-   const products = await getProducts()
+const Store = async ({searchParams}: Props) => {
+
+   const products = await getProducts(fillFilterObject(searchParams))
 
    return (
        <>

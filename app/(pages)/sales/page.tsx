@@ -1,11 +1,12 @@
-"use client"
 
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import Image from "next/image";
-import {getFetch} from "../../../lib/fetcher";
-import {Product} from "../../types";
 import Link from "next/link";
 import PriceComponent from "../../components/PriceComponent";
+import Loader from "../../components/Loader";
+import {getSalesProducts} from "../../actions/getProducts";
+import {Product} from "@prisma/client";
+
 
 function getSeason() {
    const date = new Date();
@@ -22,17 +23,15 @@ function getSeason() {
    }
 }
 
-console.log(getSeason());
+const Home = async () => {
 
-const Home =  () => {
+  const products = await getSalesProducts()
 
-   const [products, setProducts] = useState<Product[] | undefined>()
-
-   useEffect( () => {
-       getFetch("/api/salesProducts").then(data => setProducts(data)).catch(e => console.log(e));
-   }, []);
-
-
+   if(products === undefined) {
+      return (
+          <Loader/>
+      )
+   }
 
 
    return (
@@ -48,7 +47,7 @@ const Home =  () => {
           <div className="Container">
              {products && (
                  <div className="grid grid-cols-2 lg:grid-cols-3 w-full gap-y-6 gap-5 text-black mb-10">
-                    {products.map((product: Product) => (
+                    {products?.map((product: Product) => (
                         <div key={product.id} className="">
                            <Link href={`/store/product/${product.id}`} className="w-full ">
                               <Image
@@ -65,8 +64,9 @@ const Home =  () => {
                                  <span>{product.title}</span>
                                  <span className="text-gray-500 font-normal leading-4">{product.category}</span>
                                  <span className="mt-2">
-                    <PriceComponent product={product} showPercent={true} mobileHidePercent={true} />
-                    </span>
+                                   {/* @ts-ignore */}
+                                 <PriceComponent product={product} showPercent={true} mobileHidePercent={true} />
+                                 </span>
                               </div>
                            </Link>
                         </div>

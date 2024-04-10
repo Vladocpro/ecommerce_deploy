@@ -11,7 +11,7 @@ import {setToastPopup, ToastPositions, ToastType} from "../../redux/slices/modal
 import axios from "axios";
 import {useDispatch} from "react-redux";
 import DropDownSelect from "../dropdown/DropDownSelect";
-import {useRouter} from "next/navigation";
+import Tooltip from "../../components/Tooltip";
 
 
 enum ButtonAction {
@@ -27,24 +27,10 @@ interface ClientCartProps {
 }
 
 const ClientCart : FC<ClientCartProps> = ({user}) => {
-
-
-
    const dispatch = useDispatch()
-   const router = useRouter()
    const [currentUser, setCurrentUser] = useState<User | null>(user)
    const [products, setProducts] = useState<Product[] | null>(user.cart)
    const [totals, setTotals] = useState<ITotals>({price: 0, quantity: 0})
-
-   useEffect(() => {
-      if(user.cart)setTotals(getTotals(user.cart))
-   }, []);
-
-
-
-   useEffect(() => {
-      if(products) setTotals(getTotals(products))
-   }, [products]);
 
    const getTotals = (tempProducts: Product[]) : {price: number, quantity: number} => {
       let counter = 0
@@ -95,16 +81,16 @@ const ClientCart : FC<ClientCartProps> = ({user}) => {
       if(action === ButtonAction.REMOVEFROMCART) {
          let filteredProducts = removeProduct(product)
          setProducts(filteredProducts)
-         dispatch(setToastPopup({visible: true, message: "Items removed", position: ToastPositions.AUTH, type: ToastType.BLACK, duration: 1000}))
+         dispatch(setToastPopup({visible: true, message: "Items removed", position: ToastPositions.AUTH, type: ToastType.SUCCESS, duration: 2500}))
          await axios.put("/api/cart", {products: filteredProducts}).catch((e) => console.log(e))
       }
       if (action === ButtonAction.ADDTOFAV) {
          const {size,  quantity, ...originalProduct} = product
          const response = await axios.patch("/api/favorites", {product: originalProduct}).catch((e) => console.log(e))
          if(response?.data.error) {
-            dispatch(setToastPopup({visible: true, message: response.data.error, position: ToastPositions.AUTH, type: ToastType.ERROR, duration: 2000}))
+            dispatch(setToastPopup({visible: true, message: response.data.error, position: ToastPositions.AUTH, type: ToastType.ERROR, duration: 5000}))
          } else {
-            dispatch(setToastPopup({visible: true, message: response?.data.message, position: ToastPositions.AUTH, type: ToastType.BLACK, duration: 2000}))
+            dispatch(setToastPopup({visible: true, message: response?.data.message, position: ToastPositions.AUTH, type: ToastType.SUCCESS, duration: 2500}))
          }
       }
    };
@@ -124,6 +110,13 @@ const ClientCart : FC<ClientCartProps> = ({user}) => {
       window.location.assign(url)
    }
 
+   useEffect(() => {
+      if(products) setTotals(getTotals(products))
+   }, [products]);
+
+   useEffect(() => {
+      if(user.cart)setTotals(getTotals(user.cart))
+   }, []);
 
    if(!currentUser || !products) {
       return (
@@ -133,7 +126,7 @@ const ClientCart : FC<ClientCartProps> = ({user}) => {
    }
 
    return (
-       <div className="Container  grid grid-cols-[minmax(440px,_740px)_minmax(260px,_340px)] cartPage:grid-cols-1 gap-5 justify-around mt-12 pb-3">
+       <div className="Container  grid grid-cols-[minmax(440px,_740px)_minmax(260px,_340px)] cartPage:grid-cols-1 gap-16 justify-around mt-12 pb-3">
           <div className="space-y-4">
              <div className="mb-6 text-center sm:text-left">
                 <h1 className="text-2xl">Cart</h1>
@@ -163,10 +156,12 @@ const ClientCart : FC<ClientCartProps> = ({user}) => {
                              <DropDownSelect
                                  // @ts-ignore
                                  title={"Quantity: " + product.quantity.toString()} changeTittle={true}
+                                 // @ts-ignore
+                                 limitQuantity={product.sizes.find((iterationSize) => iterationSize.title === product.size)?.quantity}
+                                 quantity={product.quantity}
                                  constTitle="Quantity: "
                                  containerStyles="bg-white shadow-xl z-20 px-0 -right-1"
-                                 itemStyles="px-5 hover:bg-blue-200 hover:text-black"
-                                 svgStyles="bg-gray-500"
+                                 itemStyles="px-5 hover:bg-black font-medium hover:text-white"
                                  itemClick={(quantity: number) => editQuantity(product,quantity)}
                                  isExpanded={false}
                                  options={[1,2,3,4,5,6,7,8,9]}
@@ -175,17 +170,22 @@ const ClientCart : FC<ClientCartProps> = ({user}) => {
                        </div>
 
                        <div className="flex gap-6 mt-3 mobile:mt-2">
-                          <div className="headerSvg ml-1" onClick={() => productAction(ButtonAction.ADDTOFAV, product)}>
-                             <svg  viewBox="0 0 471.701 471.701" height={24} className="h-[24px] mobile:h-[20px]"  >
-                                <path  className="  cursor-pointer" d="M433.601,67.001c-24.7-24.7-57.4-38.2-92.3-38.2s-67.7,13.6-92.4,38.3l-12.9,12.9l-13.1-13.1c-24.7-24.7-57.6-38.4-92.5-38.4c-34.8,0-67.6,13.6-92.2,38.2c-24.7,24.7-38.3,57.5-38.2,92.4c0,34.9,13.7,67.6,38.4,92.3l187.8,187.8c2.6,2.6,6.1,4,9.5,4c3.4,0,6.9-1.3,9.5-3.9l188.2-187.5c24.7-24.7,38.3-57.5,38.3-92.4C471.801,124.501,458.301,91.701,433.601,67.001z M414.401,232.701l-178.7,178l-178.3-178.3c-19.6-19.6-30.4-45.6-30.4-73.3s10.7-53.7,30.3-73.2c19.5-19.5,45.5-30.3,73.1-30.3c27.7,0,53.8,10.8,73.4,30.4l22.6,22.6c5.3,5.3,13.8,5.3,19.1,0l22.4-22.4c19.6-19.6,45.7-30.4,73.3-30.4c27.6,0,53.6,10.8,73.2,30.3c19.6,19.6,30.3,45.6,30.3,73.3C444.801,187.101,434.001,213.101,414.401,232.701z"/>
-                             </svg>
-                          </div>
-                          <div className="headerSvg" onClick={() => productAction(ButtonAction.REMOVEFROMCART, product)}>
-                             <svg  viewBox="0 0 24 24"  height={24} className="h-[24px] mobile:h-[20px]" fill="none">
-                                <path stroke="currentColor" strokeMiterlimit="10" strokeWidth="1.5" d="M14.25 7.5v12m-4.5-12v12M5.25 6v13.5c0 1.24 1.01 2.25 2.25 2.25h9c1.24 0 2.25-1.01 2.25-2.25V5.25h2.75m-2.75 0H21m-12-3h5.25c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5H3"/>
-                             </svg>
-                          </div>
-
+                          <Tooltip text={"Add to Favorites"}>
+                             <div className="headerSvg ml-1" onClick={() => productAction(ButtonAction.ADDTOFAV, product)}>
+                                <svg viewBox="0 0 471.701 471.701" height={24} className="h-[24px] mobile:h-[20px]">
+                                   <path className="  cursor-pointer"
+                                         d="M433.601,67.001c-24.7-24.7-57.4-38.2-92.3-38.2s-67.7,13.6-92.4,38.3l-12.9,12.9l-13.1-13.1c-24.7-24.7-57.6-38.4-92.5-38.4c-34.8,0-67.6,13.6-92.2,38.2c-24.7,24.7-38.3,57.5-38.2,92.4c0,34.9,13.7,67.6,38.4,92.3l187.8,187.8c2.6,2.6,6.1,4,9.5,4c3.4,0,6.9-1.3,9.5-3.9l188.2-187.5c24.7-24.7,38.3-57.5,38.3-92.4C471.801,124.501,458.301,91.701,433.601,67.001z M414.401,232.701l-178.7,178l-178.3-178.3c-19.6-19.6-30.4-45.6-30.4-73.3s10.7-53.7,30.3-73.2c19.5-19.5,45.5-30.3,73.1-30.3c27.7,0,53.8,10.8,73.4,30.4l22.6,22.6c5.3,5.3,13.8,5.3,19.1,0l22.4-22.4c19.6-19.6,45.7-30.4,73.3-30.4c27.6,0,53.6,10.8,73.2,30.3c19.6,19.6,30.3,45.6,30.3,73.3C444.801,187.101,434.001,213.101,414.401,232.701z"/>
+                                </svg>
+                             </div>
+                          </Tooltip>
+                          <Tooltip text={"Remove from Cart"}>
+                             <div className="headerSvg" onClick={() => productAction(ButtonAction.REMOVEFROMCART, product)}>
+                                <svg viewBox="0 0 24 24" height={24} className="h-[24px] mobile:h-[20px]" fill="none">
+                                   <path stroke="currentColor" strokeMiterlimit="10" strokeWidth="1.5"
+                                         d="M14.25 7.5v12m-4.5-12v12M5.25 6v13.5c0 1.24 1.01 2.25 2.25 2.25h9c1.24 0 2.25-1.01 2.25-2.25V5.25h2.75m-2.75 0H21m-12-3h5.25c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5H3"/>
+                                </svg>
+                             </div>
+                          </Tooltip>
                        </div>
 
                     </div>
