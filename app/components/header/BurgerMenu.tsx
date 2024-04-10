@@ -16,8 +16,8 @@ const BurgerMenu = () => {
 
 
    return (
-       <div className="block mr-5  sm:hidden">
-          <div className="block relative cursor-pointer z-13 sm:hidden  h-[18px] w-[24px]  after:top-[-9px] after:left-[-8px] after:h-[200%] after:w-[165%] space-y-1.5 " onClick={() => setBurgerVisible(!burgerVisible)}>
+       <div className="block mr-5  lg:hidden">
+          <div className="block relative cursor-pointer z-13 lg:hidden  h-[18px] w-[24px]  after:top-[-9px] after:left-[-8px] after:h-[200%] after:w-[165%] space-y-1.5 " onClick={() => setBurgerVisible(!burgerVisible)}>
              <hr className={`headerBurgerLine ${burgerVisible && "rotate-45  translate-y-[0.5rem] "}`}/>
              <hr className={`headerBurgerLine mx-auto ${burgerVisible ? "w-[1%]" : "w-[100%]" }`}/>
              <hr className={`headerBurgerLine ${burgerVisible && "rotate-[-45deg] translate-y-[-0.5rem] "}`}/>

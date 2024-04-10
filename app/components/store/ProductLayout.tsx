@@ -72,11 +72,15 @@ const ProductLayout: FC<ProductLayoutProps> = ({products}) => {
               <div key={product.id} className="">
                  <Link  href={`/store/product/${product.id}`} className="w-full ">
                     <Image
-                        className="w-full  object-cover pointer-events-none select-none"
-                        // fill
+                        className="data-[loaded=false]:animate-pulse data-[loaded=false]:bg-gray-100/10 w-full  object-cover pointer-events-none select-none"
+                        // fill={}
                         priority={true}
                         height={620}
                         width={600}
+                        // @ts-ignore
+                        onLoad={event => {
+                           event.currentTarget.setAttribute('data-loaded', 'true')
+                        }}
                         // @ts-ignore
                         src={product.images[0]}
                         alt="Image"

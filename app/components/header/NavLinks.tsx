@@ -21,7 +21,7 @@ const NavLinks: FC<NavLinkProps> =  ({user})  => {
 
 
    return (
-       <div className="hidden gap-4 items-center sm:flex">
+       <div className="hidden gap-4 items-center lg:flex">
           <Tooltip text="Favorites" onClick={() => user !== null ? router.push("/favorites") : dispatch(setAuthPopup(true))}>
              <div className="headerSvg" >
                 <svg  viewBox="0 0 471.701 471.701" height={24}  >

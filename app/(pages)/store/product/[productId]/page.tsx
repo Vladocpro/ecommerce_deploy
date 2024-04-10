@@ -40,21 +40,6 @@ const Home =  () => {
    const [sliderImage, setSliderImage] = useState<number>(0)
    const [sizes, setSizes] =useState<string[]>([]);
 
-   useEffect(() => {
-      getFetch("/api/products/" + params?.productId).then((data) => setProduct(data))
-
-   }, []);
-   const srollToTheTop = () => {
-      window.scrollTo({top: 0, left: 0, behavior: "smooth"});
-   }
-
-   useEffect(() => {
-      if(ref.current !== null)
-         srollToTheTop();
-   }, [ref.current]);
-
-
-
    const buttonClick = async  (action : ButtonAction) => {
 
       if(!product) {
@@ -119,13 +104,23 @@ const Home =  () => {
              else
                 setSizes([...sizes, size.title])
           }}
-               key={key} className={`flex items-center justify-center h-[46px] border-2 ${sizes.includes(size.title) ? "border-black" : " border-gray-300"}  ${!size.isAvailable ? " bg-gray-100 text-gray-300" : "hover:border-black cursor-pointer"}  rounded-lg  transition-all duration-100`}>
-             <span className="select-none">
+               key={key} className={`flex items-center justify-center h-[38px] sm:h-[48px] md:h-[54px] lg:h-[42px] xl:h-[46px] border-2 ${sizes.includes(size.title) ? "border-black" : " border-gray-300"}  ${!size.isAvailable ? " bg-gray-100 text-gray-300" : "hover:border-black cursor-pointer"}  rounded-lg  transition-all duration-100`}>
+             <span className="select-none text-sm sm:text-base">
                 {size.title}
              </span>
           </li>
       )
    }
+
+   useEffect(() => {
+      if(ref.current !== null) {
+         window.scrollTo({top: 0, left: 0, behavior: "smooth"});
+      }
+   }, [ref.current]);
+
+   useEffect(() => {
+      getFetch("/api/products/" + params?.productId).then((data) => setProduct(data))
+   }, []);
 
    if(product === null)  {
       return (
@@ -134,19 +129,19 @@ const Home =  () => {
    }
 
    return (
-       <div className="flex flex-col lg:flex-row justify-between lg:w-[90%] mx-auto  my-5" ref={ref}>
-          <div className="lg:flex block ">
-             <div className="hidden lg:flex ml-[6%] flex-col gap-4 w-[140px]">
+       <div className="flex flex-col lg:flex-row justify-center lg:gap-10 xl:gap-16 lg:w-[96%] xl:w-[92%] mx-auto  my-5" ref={ref}>
+          <div className="block lg:flex xl:min-w-[736px] gap-4">
+             <div className="hidden lg:flex ml-auto flex-col gap-4 w-[140px]">
                 {product?.images.map((image: string, index: number) => (
                     <Image src={image} key={image} priority={true}   width={140} height={140} alt="" className="object-cover cursor-pointer hover:shadow-xl hover:opacity-70 transition-all duration-200  rounded-md" onMouseEnter={() => setSliderImage(index)}/>
                 ))}
              </div>
 
-             <div className="hidden lg:block w-full max-w-[720px] rounded-ld shrink">
-                <Image src={product?.images[0]} priority={true} width={720} height={720} alt="" className={`object-contain rounded-lg  ${sliderImage === 0 ? "grid" : "hidden" }   grid-cols-productSizeSection aspect-[1/1]`}/>
-                <Image src={product?.images[1]} priority={true} width={720} height={720} alt="" className={`object-contain rounded-lg  ${sliderImage === 1 ? "grid" : "hidden" }   grid-cols-productSizeSection aspect-[1/1]`}/>
-                <Image src={product?.images[2]} priority={true} width={720} height={720} alt="" className={`object-contain rounded-lg  ${sliderImage === 2 ? "grid" : "hidden" }   grid-cols-productSizeSection aspect-[1/1]`}/>
-                <Image src={product?.images[3]} priority={true} width={720} height={720} alt="" className={`object-contain rounded-lg  ${sliderImage === 3 ? "grid" : "hidden" }   grid-cols-productSizeSection aspect-[1/1]`}/>
+             <div className="hidden lg:block w-full lg:min-w-[482px] xl:max-w-[585px] rounded-ld shrink">
+                <Image src={product?.images[0]} priority={true} width={720} height={720} alt=""  className={`object-contain rounded-lg  ${sliderImage === 0 ? "grid" : "hidden" }   grid-cols-productSizeSection xl:w-[581px] lg:w-[482px]`}/>
+                <Image src={product?.images[1]} priority={true} width={720} height={720} alt=""  className={`object-contain rounded-lg  ${sliderImage === 1 ? "grid" : "hidden" }   grid-cols-productSizeSection xl:w-[581px] lg:w-[482px]`}/>
+                <Image src={product?.images[2]} priority={true} width={720} height={720} alt=""  className={`object-contain rounded-lg  ${sliderImage === 2 ? "grid" : "hidden" }   grid-cols-productSizeSection xl:w-[581px] lg:w-[482px]`}/>
+                <Image src={product?.images[3]} priority={true} width={720} height={720} alt=""  className={`object-contain rounded-lg  ${sliderImage === 3 ? "grid" : "hidden" }   grid-cols-productSizeSection xl:w-[581px] lg:w-[482px]`}/>
              </div>
 
              <div className="block lg:hidden mx-3 mb-12 w-full shrink">
@@ -156,7 +151,7 @@ const Home =  () => {
                     draggable={true}
                     showDots={true}
                     partialVisbile={true}
-                    ssr={true} // means to render carousel on server-side.
+                    ssr={true}
                     infinite={true}
                     keyBoardControl={true}
                     customTransition="all 2s"
@@ -165,13 +160,13 @@ const Home =  () => {
                     removeArrowOnDeviceType={["tablet", "mobile"]}
                     itemClass="carousel-item-padding-40-px">
                    {product.images.map((slide) => (
-                       <Image src={slide} key={slide} width={720} height={720}  className="object-contain mx-auto select-none pointer-events-none pr-4 sm:pr-0" alt=""/>
+                       <Image src={slide} priority={true} key={slide} width={630} height={650}  className="object-contain mx-auto select-none pointer-events-none pr-4 sm:pr-0 lg:w-[110px] xl:w-[136px]" alt=""/>
                    ))}
                 </Carousel>
              </div>
           </div>
 
-          <div className="mx-3 lg:mx-auto mt-5  lg:ml-auto lg:mt-0 min-w-[330px]  lg:grid lg:grid-cols-productSizeSection">
+          <div className="mobile:mx-3 mx-auto lg:mx-0 mt-5 min-w-[305px] max-w-[400px] sm:max-w-[580px] md:max-w-[630px] lg:mt-0 lg:max-w-[350px] xl:max-w-[440px]">
              <div className="flex flex-col w-full text-lg font-medium" >
                 <span className="text-2xl">{product?.title}</span>
                 <span className="text-gray-500 font-normal">{product?.category}</span>
@@ -186,15 +181,15 @@ const Home =  () => {
                    <span>Select Size</span>
                    <Link  href={sizeGuideRedirect()} target="_blank" rel="noopener noreferrer" className="mr-1.5 text-gray-500 font-medium cursor-pointer">Size Guide</Link>
                 </div>
-                <ul className="grid grid-cols-3 gap-x-6 gap-y-2.5 mt-3 mb-6 w-full">
+                <ul className="grid grid-cols-3 gap-y-3 gap-x-5  sm:gap-y-3.5 sm:gap-x-7 md:gap-y-3.5 md:gap-x-6 lg:gap-x-[14px] xl:gap-x-6 lg:gap-y-2 xl:gap-y-2.5 mt-3 mb-6 w-full">
                    {/*@ts-ignore*/}
                    {product.sizes.map((size : {title: string, isAvailable: boolean}, index: number) => (
                        <SizeElement size={size} key={index} />
                    ))}
                 </ul>
                 <div className="flex flex-col gap-y-2 w-full">
-                   <button onClick={() => buttonClick(ButtonAction.ADDTOBAG)} className="bg-black text-white rounded-full transition-all duration-200 py-[18px] hover:bg-gray-500">Add to Cart</button>
-                   <button onClick={() => buttonClick(ButtonAction.ADDTOFAV)} className="border-2 border-gray-300 hover:border-black transition-all duration-100 rounded-full py-4">Add to Favorite</button>
+                   <button onClick={() => buttonClick(ButtonAction.ADDTOBAG)} className="bg-black text-white rounded-full transition-all duration-200 hover:bg-gray-500 py-3.5 sm:py-[18px]  ">Add to Cart</button>
+                   <button onClick={() => buttonClick(ButtonAction.ADDTOFAV)} className="border-2 border-gray-300 hover:border-black transition-all duration-100 rounded-full py-3 sm:py-4 ">Add to Favorite</button>
                 </div>
              </div>
           </div>
