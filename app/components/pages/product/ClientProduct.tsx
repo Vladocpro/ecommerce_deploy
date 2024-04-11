@@ -57,7 +57,7 @@ const ClientProduct =  ({product}: {product: Product }) => {
                dispatch(setToastPopup({visible: true, message: response.data.error, position: ToastPositions.AUTH, type: ToastType.ERROR, duration: 5000}))
             }
          } else {
-            dispatch(setToastPopup({visible: true, message: response?.data.message, position: ToastPositions.AUTH, type: ToastType.BLACK, duration: 2500}))
+            dispatch(setToastPopup({visible: true, message: response?.data.message, position: ToastPositions.AUTH, type: ToastType.SUCCESS, duration: 2500}))
          }
       }
       if(action === ButtonAction.ADDTOFAV) {
@@ -68,7 +68,7 @@ const ClientProduct =  ({product}: {product: Product }) => {
             }
             // dispatch(setToastPopup({visible: true, message: response.data.error, position: ToastPositions.AUTH, type: ToastType.ERROR, duration: 2000}))
          } else {
-            dispatch(setToastPopup({visible: true, message: response?.data.message, position: ToastPositions.AUTH, type: ToastType.BLACK, duration: 2500}))
+            dispatch(setToastPopup({visible: true, message: response?.data.message, position: ToastPositions.AUTH, type: ToastType.SUCCESS, duration: 2500}))
          }
       }
    };
@@ -112,10 +112,14 @@ const ClientProduct =  ({product}: {product: Product }) => {
       if(ref.current !== null) {
          window.scrollTo({top: 0, left: 0, behavior: "smooth"});
       }
-   }, [ref.current]);
+   }, []);
 
 
-   //
+   if (product === undefined || product === null) {
+      return (
+          <></>
+      )
+   }
 
 
    return (

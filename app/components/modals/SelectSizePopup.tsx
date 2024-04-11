@@ -29,7 +29,7 @@ const SelectSizePopup = () => {
       }
       setSizes([])
       dispatch(closeSelectSizePopup());
-      dispatch(setToastPopup({visible: true, message: "Added to Cart", position: ToastPositions.AUTH, type: ToastType.BLACK, duration: 2000}))
+      dispatch(setToastPopup({visible: true, message: "Added to Cart", position: ToastPositions.AUTH, type: ToastType.SUCCESS, duration: 2500}))
       await axios.patch("/api/cart", {product: selectSizePopup.product, sizes: sizes}).catch((e) => console.log(e))
    }
 

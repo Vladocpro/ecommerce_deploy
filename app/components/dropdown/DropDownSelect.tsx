@@ -9,7 +9,6 @@ interface DropDownSelectProps {
    title: string,
    titleStyles?: string,
    containerStyles? :string,
-   itemStyles? :string,
    constTitle?: string,
    limitQuantity: number,
    svgBox?: string,
@@ -21,7 +20,7 @@ interface DropDownSelectProps {
 }
 
 
-const DropDownSelect: FC<DropDownSelectProps> = ({title, titleStyles, changeTittle, itemClick, limitQuantity, svgBox, itemStyles, constTitle,containerStyles, isExpanded, sortBy,  options}) => {
+const DropDownSelect: FC<DropDownSelectProps> = ({title, titleStyles, changeTittle, itemClick, limitQuantity, svgBox, constTitle,containerStyles, isExpanded, sortBy,  options}) => {
 
    const [dropDownTitle, setDropDownTitle] = useState<string>(title)
    const [isOpen, setIsOpen] = useState<boolean>(isExpanded)
@@ -35,11 +34,11 @@ const DropDownSelect: FC<DropDownSelectProps> = ({title, titleStyles, changeTitt
    return (
        <div className="relative" ref={dropdownRef}>
 
-          <div className="flex gap-3 items-center px-1 cursor-pointer select-none " onClick={() => setIsOpen(!isOpen)}>
+          <div className="flex gap-1 sm:gap-3 items-center cursor-pointer select-none " onClick={() => setIsOpen(!isOpen)}>
              <div className={titleStyles}>{changeTittle ? dropDownTitle : title}</div>
              <div className={`relative w-8 h-8 ${svgBox}`}>
-                <hr className={`absolute h-[2.5px] w-4 rounded-xl bottom-[13px] left-0.5    ${!isOpen ? "rotate-45" :  "-rotate-45"} bg-gray-500 transition-all duration-300`}/>
-                <hr className={`absolute h-[2.5px] w-4 rounded-xl bottom-[13px] right-1   ${!isOpen ? "-rotate-45" : "rotate-45"}    bg-gray-500    transition-all duration-300`}/>
+                <hr className={`absolute h-[2px] w-3 sm:h-[2.5px] sm:w-4 rounded-xl bottom-[14px] sm:bottom-[13px] left-1.5 sm:left-0.5    ${!isOpen ? "rotate-45" :  "-rotate-45"} bg-gray-500 transition-all duration-300`}/>
+                <hr className={`absolute h-[2px] w-3 sm:h-[2.5px] sm:w-4 rounded-xl bottom-[14px] sm:bottom-[13px] right-1.5 sm:right-1   ${!isOpen ? "-rotate-45" : "rotate-45"}    bg-gray-500    transition-all duration-300`}/>
              </div>
           </div>
 
@@ -56,7 +55,7 @@ const DropDownSelect: FC<DropDownSelectProps> = ({title, titleStyles, changeTitt
                        itemClick(Number(item))
                     }
                  }}
-                      className={`text-center cursor-pointer hover:text-gray-400 ${itemStyles} rounded-md`}
+                      className={`text-center cursor-pointer py-[3px] sm:py-0.5 px-5 hover:bg-black font-medium hover:text-white rounded-md`}
                  >
                     {item}
                  </div>

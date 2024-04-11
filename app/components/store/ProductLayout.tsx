@@ -22,10 +22,10 @@ const ProductLayout: FC<ProductLayoutProps> = ({products}) => {
 
    if(products.length === 0) {
       return  (
-          <div className={'flex flex-col gap-1 justify-center items-center h-[70vh] w-full'}>
-             <img src="/empty-box.png" alt="" className={'h-24 w-24'}/>
-             <span className="text-3xl font-medium">Couldn&apos;t find the product!</span>
-             <button className="bg-black text-white font-bold px-4 py-2 rounded-lg mt-6 hover:bg-gray-700" onClick={() => router.push("/store")}>Reset Filters
+          <div className={'flex flex-col gap-1 justify-center items-center h-[50vh] sm:h-[70vh] w-full'}>
+             <img src="/empty-box.png" alt="" className="h-16 w-16 sm:h-24 sm:w-24"/>
+             <span className="text-xl sm:text-3xl font-medium">Couldn&apos;t find the product!</span>
+             <button className="bg-black text-white font-bold text-base px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg mt-2 sm:mt-6 hover:bg-gray-700" onClick={() => router.push("/store")}>Reset Filters
              </button>
           </div>
       )

@@ -1,6 +1,6 @@
 "use client"
 
-import React, {FC, useEffect, useRef, useState} from 'react';
+import React, {FC, useEffect, useMemo, useRef, useState} from 'react';
 import {useRouter, useSearchParams} from "next/navigation";
 import useClickOutside from "../useClickOutside";
 import qs from "query-string";
@@ -18,19 +18,24 @@ interface DropDownSelectProps {
 
 
 const DropDownSelect: FC<DropDownSelectProps> = ({ svgStyles, svgBox, itemStyles, constTitle,containerStyles, isExpanded, sortBy,  options}) => {
-
-   const [dropDownTitle, setDropDownTitle] = useState<string>("Sort By")
    const [isOpen, setIsOpen] = useState<boolean>(isExpanded)
    const params = useSearchParams()
    const router = useRouter()
    const dropdownRef = useRef<HTMLDivElement | null>(null)
-
    useClickOutside(dropdownRef, () => {
       setIsOpen(false);
    });
 
-   useEffect(() => {
-      if(dropDownTitle === "" || dropDownTitle === "Sort By") {
+   const dropDownTitle = useMemo(() => {
+      const tempSortBy = params?.get("sortBy")
+      if(!tempSortBy || tempSortBy === "" || tempSortBy === "Sort By") {
+         return "Sort By"
+      }
+      return tempSortBy
+   }, [params])
+
+   const pushParam = (title: string) => {
+      if(title === "" || title === "Sort By") {
          return
       }
       let currentQuery = {};
@@ -42,7 +47,7 @@ const DropDownSelect: FC<DropDownSelectProps> = ({ svgStyles, svgBox, itemStyles
       if(updatedQuery.sortBy === "Sort By") {
          delete updatedQuery.sortBy
       } else {
-         updatedQuery.sortBy = dropDownTitle
+         updatedQuery.sortBy = title
       }
 
       const url = qs.stringifyUrl({
@@ -51,16 +56,7 @@ const DropDownSelect: FC<DropDownSelectProps> = ({ svgStyles, svgBox, itemStyles
       }, {skipNull: true})
 
       router.push(url)
-   }, [dropDownTitle]);
-
-   useEffect(() => {
-      const tempSortBy = params?.get("sortBy")
-      if(!tempSortBy || tempSortBy === "" || tempSortBy === "Sort By") {
-         setDropDownTitle("Sort By")
-         return
-      }
-      setDropDownTitle(tempSortBy)
-   }, [params]);
+   };
 
    return (
        <div className="relative" ref={dropdownRef}>
@@ -77,7 +73,7 @@ const DropDownSelect: FC<DropDownSelectProps> = ({ svgStyles, svgBox, itemStyles
              {options.map((item, index) => (
                  <div key={index} onClick={() => {
                     setIsOpen(!isOpen)
-                    setDropDownTitle(item);
+                    pushParam(item);
                  }} className={` cursor-pointer hover:text-gray-400 ${itemStyles} rounded-md`}>
                     {item}
                  </div>

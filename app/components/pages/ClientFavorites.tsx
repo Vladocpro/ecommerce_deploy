@@ -23,9 +23,9 @@ const ClientFavorites : FC<ClientFavoritesProps> = ({user}) => {
       const response = await axios.put("/api/favorites",  {products: newProducts, user: user}).catch((e) => console.log(e))
       setProducts(newProducts);
       if(response?.data.error) {
-         dispatch(setToastPopup({visible: true, message: response.data.error, position: ToastPositions.AUTH, type: ToastType.ERROR, duration: 2000}))
+         dispatch(setToastPopup({visible: true, message: response.data.error, position: ToastPositions.AUTH, type: ToastType.ERROR, duration: 5000}))
       } else {
-         dispatch(setToastPopup({visible: true, message: response?.data.message, position: ToastPositions.AUTH, type: ToastType.BLACK, duration: 2000}))
+         dispatch(setToastPopup({visible: true, message: response?.data.message, position: ToastPositions.AUTH, type: ToastType.SUCCESS, duration: 2500}))
       }
    };
 

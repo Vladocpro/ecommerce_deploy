@@ -12,6 +12,7 @@ import axios from "axios";
 import {useDispatch} from "react-redux";
 import DropDownSelect from "../dropdown/DropDownSelect";
 import Tooltip from "../../components/Tooltip";
+import {useRouter} from "next/navigation";
 
 
 enum ButtonAction {
@@ -27,10 +28,11 @@ interface ClientCartProps {
 }
 
 const ClientCart : FC<ClientCartProps> = ({user}) => {
-   const dispatch = useDispatch()
    const [currentUser, setCurrentUser] = useState<User | null>(user)
    const [products, setProducts] = useState<Product[] | null>(user.cart)
    const [totals, setTotals] = useState<ITotals>({price: 0, quantity: 0})
+   const dispatch = useDispatch()
+   const router = useRouter()
 
    const getTotals = (tempProducts: Product[]) : {price: number, quantity: number} => {
       let counter = 0
@@ -118,6 +120,19 @@ const ClientCart : FC<ClientCartProps> = ({user}) => {
       if(user.cart)setTotals(getTotals(user.cart))
    }, []);
 
+   if(products?.length === 0)  {
+      return (
+         <div className={'flex flex-col gap-1 justify-center items-center h-[60vh] sm:h-[70vh] w-full'}>
+            <img src="/empty-box.png" alt="" className="h-16 w-16 sm:h-24 sm:w-24"/>
+            <span className="text-xl sm:text-3xl font-medium">Your Cart is Empty!</span>
+            <button className="bg-black text-white font-bold text-base px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg mt-2 sm:mt-6 hover:bg-gray-700"
+                    onClick={() => router.push("/store")}>Go Shopping
+            </button>
+         </div>
+      )
+   }
+
+
    if(!currentUser || !products) {
       return (
           <div>
@@ -126,30 +141,32 @@ const ClientCart : FC<ClientCartProps> = ({user}) => {
    }
 
    return (
-       <div className="Container  grid grid-cols-[minmax(440px,_740px)_minmax(260px,_340px)] cartPage:grid-cols-1 gap-16 justify-around mt-12 pb-3">
+       <div className="Container  grid lg:grid-cols-[minmax(440px,_740px)_minmax(260px,_340px)] grid-cols-1 gap-16 justify-around mt-12 pb-5">
           <div className="space-y-4">
-             <div className="mb-6 text-center sm:text-left">
+             <div className="mb-6 text-center lg:text-left">
                 <h1 className="text-2xl">Cart</h1>
-                <h1 className="text-gray-400 block sm:hidden">{totals.quantity} {totals.quantity > 1 ? "Items" : "Item"} | <span className="text-black">£{totals.price}</span></h1>
+                <h1 className="text-gray-400 block lg:hidden">{totals.quantity} {totals.quantity > 1 ? "Items" : "Item"} | <span
+                    className="text-black">£{totals.price}</span></h1>
              </div>
+
              {products.map((product: Product, index: number) => (
-                 <div key={product.id + index} className="grid grid-cols-[150px_minmax(130px,_1fr)] mobile:grid-cols-[100px_1fr] text-lg gap-3  mobile:border-[1px] mobile:rounded-lg mobile:border-gray-300">
+                 <div key={product.id + index} className="grid grid-cols-[150px_minmax(130px,_1fr)] mobile:grid-cols-[150px_1fr] text-lg gap-3 rounded-lg  shadow-md">
                     <Link href={`/store/product/${product.id}`}>
                        {/*@ts-ignore*/}
-                       <Image src={product.images[0]} width={150} height={150} className="mobile:w-[100px] mobile:h-[120px] rounded-lg" alt="Image"/>
+                       <Image src={product.images[0]} width={150} height={150} className="w-[150px] h-[187.5px] rounded-l-lg" alt="Image"/>
                     </Link>
 
-                    <div className="flex flex-col gap-2 mobile:gap-0 ">
-                       <div className="flex items-center mobile:items-start text-xl mobile:text-base mobile:flex-col justify-between">
+                    <div className="flex flex-col gap-2 mobile:gap-0 pr-3 pt-1 pb-2 sm:pt-1 sm:pb-1 justify-center">
+                       <div className="flex flex-col sm:flex-row items-start sm:items-center text-xl mobile:text-base justify-between">
                           <Link href={`/store/product/${product.id}`}>{product.title}</Link>
                           <PriceComponent product={product} showPercent={false} />
                        </div>
                        <span className="text-gray-500 mobile:text-sm">
                               {product.category}
-                          </span>
+                       </span>
 
-                       <div className="flex items-center gap-4">
-                             <span className="text-gray-500 mobile:w-[70px] w-[100px] mobile:text-sm">
+                       <div className="flex flex-col sm:flex-row items-start sm:items-center gap-1 sm:gap-4">
+                             <span className="text-gray-500 mobile:w-[70px] w-[110px] mobile:text-sm">
                                  Size: {product.size}
                               </span>
                           <div className="text-gray-500 mobile:text-sm">
@@ -161,7 +178,6 @@ const ClientCart : FC<ClientCartProps> = ({user}) => {
                                  quantity={product.quantity}
                                  constTitle="Quantity: "
                                  containerStyles="bg-white shadow-xl z-20 px-0 -right-1"
-                                 itemStyles="px-5 hover:bg-black font-medium hover:text-white"
                                  itemClick={(quantity: number) => editQuantity(product,quantity)}
                                  isExpanded={false}
                                  options={[1,2,3,4,5,6,7,8,9]}

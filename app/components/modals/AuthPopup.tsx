@@ -30,8 +30,8 @@ const AuthPopup = () => {
       try {
 
          if (isRegister) await postFetch('/api/auth/register', data).then((response) => {
-            if(response.error)  dispatch(setToastPopup({visible: true, message: response.error, position: ToastPositions.AUTH, type: ToastType.ERROR}))
-            dispatch(setToastPopup({visible: true, message: response.message, position: ToastPositions.AUTH, type: ToastType.SUCCESS, duration: 1000}))
+            if(response.error)  dispatch(setToastPopup({visible: true, message: response.error, position: ToastPositions.AUTH, type: ToastType.ERROR, duration: 5000}))
+            dispatch(setToastPopup({visible: true, message: response.message, position: ToastPositions.AUTH, type: ToastType.SUCCESS, duration: 2500}))
          });
 
          signIn('credentials', {
@@ -39,12 +39,12 @@ const AuthPopup = () => {
             redirect: false
          }).then((callback) => {
             if(callback?.ok) {
-               dispatch(setToastPopup({visible: true, message: "Authenticated", position: ToastPositions.AUTH, type: ToastType.SUCCESS, duration: 1000}))
+               dispatch(setToastPopup({visible: true, message: "Authenticated", position: ToastPositions.AUTH, type: ToastType.SUCCESS, duration: 2500}))
                router.refresh()
                closePopup();
             }
             if(callback?.error) {
-                  dispatch(setToastPopup({visible: true, message: callback.error, position: ToastPositions.AUTH, type: ToastType.ERROR}))
+                  dispatch(setToastPopup({visible: true, message: callback.error, position: ToastPositions.AUTH, type: ToastType.ERROR, duration: 5000}))
             }
          })
 
