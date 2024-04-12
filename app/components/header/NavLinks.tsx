@@ -60,7 +60,7 @@ const NavLinks: FC<NavLinkProps> =  ({user})  => {
           <Tooltip text="Cart" onClick={() => user !== null ? router.push("/cart") : dispatch(setAuthPopup(true))}>
              <div className="relative">
                 <span
-                    className="absolute top-[60%] right-[50%] translate-x-1/2 -translate-y-1/2 text-xs z-13 select-none pointer-events-none bg-opacity-40 rounded-full">{cartQuantity}</span>
+                    className="absolute top-[60%] right-[50%] translate-x-1/2 -translate-y-1/2 text-xs z-13 font-medium select-none pointer-events-none bg-opacity-40 rounded-full">{cartQuantity}</span>
                 <div className="headerSvg after:top-[-4px]">
                    <svg viewBox="0 0 32 32" height={24} fill="black">
                       <path fill="currentColor" className="cursor-pointer"

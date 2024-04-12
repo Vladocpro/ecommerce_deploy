@@ -20,7 +20,6 @@ const ClientOrders : FC<ClientOrdersProps> = ({currentUser, userOrders}) => {
    const [filteredOrders, setFilteredOrders] = useState<Order[]>([])
 
    const [user, setUser] = useState<User | undefined>(currentUser)
-   const dispatch = useDispatch();
    const router = useRouter()
 
 
