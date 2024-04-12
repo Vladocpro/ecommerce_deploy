@@ -75,7 +75,7 @@ const ClientCart : FC<ClientCartProps> = ({user}) => {
       },[])
       setProducts(filteredProducts)
       await axios.put("/api/cart", {products: filteredProducts}).catch((e) => console.log(e))
-
+      router.refresh()
    }
 
    const productAction = async  (action : ButtonAction, product : Product) => {
@@ -86,6 +86,7 @@ const ClientCart : FC<ClientCartProps> = ({user}) => {
          setProducts(filteredProducts)
          dispatch(setToastPopup({visible: true, message: "Items removed", position: ToastPositions.AUTH, type: ToastType.SUCCESS, duration: 2500}))
          await axios.put("/api/cart", {products: filteredProducts}).catch((e) => console.log(e))
+         router.refresh()
       }
       if (action === ButtonAction.ADDTOFAV) {
          const {size,  quantity, ...originalProduct} = product

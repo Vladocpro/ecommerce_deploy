@@ -11,7 +11,7 @@ import Head from "next/head";
 
 
 export const metadata: Metadata = {
-  title: 'Nike',
+  title: 'Ecom',
   description: 'Ecommerce Nike',
    icons: "/icons8-nike-50.png"
 }
