@@ -52,7 +52,7 @@ export async function POST(req: Request) {
    if (event.type === "checkout.session.completed") {
       const lineItems = await stripe.checkout.sessions.listLineItems(session.id);
       const orderItems = await getCartItems(lineItems, stripe)
-
+      console.log(orderItems)
       const date = new Date(session.created * 1000);
       const formattedDate = `${date.getDate()} ${date.toLocaleString('default', { month: 'short' })} ${date.getFullYear()}`;
       try {

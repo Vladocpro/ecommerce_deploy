@@ -11,11 +11,13 @@ import {
    ToastType
 } from "../../redux/slices/modals";
 import axios from "axios";
+import {useRouter} from "next/navigation";
 
 const SelectSizePopup = () => {
 
    const selectSizePopup  = useSelector((state : RootState) => state.modals.selectSizePopup)
    const dispatch = useDispatch()
+   const router = useRouter()
    const [sizes, setSizes] =useState<string[]>([]);
 
    useEffect(() => {
@@ -31,6 +33,7 @@ const SelectSizePopup = () => {
       dispatch(closeSelectSizePopup());
       dispatch(setToastPopup({visible: true, message: "Added to Cart", position: ToastPositions.AUTH, type: ToastType.SUCCESS, duration: 2500}))
       await axios.patch("/api/cart", {product: selectSizePopup.product, sizes: sizes}).catch((e) => console.log(e))
+      router.refresh()
    }
 
 

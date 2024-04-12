@@ -10,6 +10,7 @@ import "react-multi-carousel/lib/styles.css";
 import Link from "next/link";
 import {setAuthPopup, setToastPopup, ToastPositions, ToastType} from "../../../redux/slices/modals";
 import PriceComponent from "../../../components/PriceComponent";
+import {useRouter} from "next/navigation";
 
 
 const responsive = {
@@ -35,6 +36,7 @@ const ClientProduct =  ({product}: {product: Product }) => {
    const ref = useRef(null);
    const [sliderImage, setSliderImage] = useState<number>(0)
    const [sizes, setSizes] =useState<string[]>([]);
+   const router = useRouter()
 
    const buttonClick = async  (action : ButtonAction) => {
 
@@ -55,9 +57,11 @@ const ClientProduct =  ({product}: {product: Product }) => {
                dispatch(setAuthPopup(true))
             } else {
                dispatch(setToastPopup({visible: true, message: response.data.error, position: ToastPositions.AUTH, type: ToastType.ERROR, duration: 5000}))
+               router.refresh()
             }
          } else {
             dispatch(setToastPopup({visible: true, message: response?.data.message, position: ToastPositions.AUTH, type: ToastType.SUCCESS, duration: 2500}))
+            router.refresh()
          }
       }
       if(action === ButtonAction.ADDTOFAV) {
