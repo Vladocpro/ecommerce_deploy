@@ -29,7 +29,7 @@ const SelectSizePopup = () => {
       }
       setSizes([])
       dispatch(closeSelectSizePopup());
-      dispatch(setToastPopup({visible: true, message: "Added to Cart", position: ToastPositions.AUTH, type: ToastType.BLACK, duration: 2000}))
+      dispatch(setToastPopup({visible: true, message: "Added to Cart", position: ToastPositions.AUTH, type: ToastType.SUCCESS, duration: 2500}))
       await axios.patch("/api/cart", {product: selectSizePopup.product, sizes: sizes}).catch((e) => console.log(e))
    }
 
@@ -63,15 +63,15 @@ const SelectSizePopup = () => {
                            </div>
                            <ul className="grid grid-cols-3 cartPage:flex cartPage:overflow-x-scroll cartPage:overflow-y-hidden cartPage:scrollbar-hide mt-auto gap-x-6 gap-y-2.5 w-[350px] cartPage:w-[95vw] ">
                               {/*@ts-ignore*/}
-                              {selectSizePopup.product.sizes.map((size : {title: string, isAvailable: boolean}, index: number) => (
+                              {selectSizePopup.product.sizes.map((size : {title: string, quantity: number}, index: number) => (
                                   <li  onClick={() => {
-                                     if(!size.isAvailable) return
+                                     if(size.quantity === 0) return
                                      if(sizes.includes(size.title))
                                         setSizes(sizes.filter((item) => item !== size.title))
                                      else
                                         setSizes([...sizes, size.title])
                                   }}
-                                       key={size.title} className={`flex items-center justify-center h-[46px] border-2 ${sizes.includes(size.title) ? "border-black" : " border-gray-300"}  ${!size.isAvailable ? " bg-gray-100 text-gray-300" : "hover:border-black cursor-pointer"}  rounded-lg font-medium transition-all duration-100`}>
+                                       key={size.title} className={`flex items-center justify-center h-[46px] border-2 ${sizes.includes(size.title) ? "border-black" : " border-gray-300"}  ${size.quantity === 0 ? " bg-gray-100 text-gray-300" : "hover:border-black cursor-pointer"}  rounded-lg font-medium transition-all duration-100`}>
                                <span className="select-none  cartPage:w-24 cartPage:text-center">
                                   {size.title}
                                </span>

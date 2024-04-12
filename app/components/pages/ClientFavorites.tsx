@@ -1,6 +1,6 @@
 "use client"
 
-import React, {FC, useState} from 'react';
+import React, {FC, useEffect, useState} from 'react';
 import {Product, User} from "../../types";
 import {useDispatch} from "react-redux";
 import axios from "axios";
@@ -8,6 +8,9 @@ import {setSelectSizePopup, setToastPopup, ToastPositions, ToastType} from "../.
 import Link from "next/link";
 import Image from "next/image";
 import PriceComponent from "../PriceComponent";
+import {useRouter} from "next/navigation";
+import {ScaleLoader} from "react-spinners";
+import {getFetch} from "../../../lib/fetcher";
 
 interface ClientFavoritesProps {
    user : User
@@ -15,26 +18,51 @@ interface ClientFavoritesProps {
 
 const ClientFavorites : FC<ClientFavoritesProps> = ({user}) => {
    const [products, setProducts] = useState<Product[]>(user.favorites)
+   const [isWaiting, setIsWaiting] = useState<boolean>(true)
+
    const dispatch = useDispatch();
+   const router = useRouter()
 
 
-   const removeFromFav = async (product : Product) => {
-      const newProducts = products.filter((item) => (item!.id !== product.id))
-      const response = await axios.put("/api/favorites",  {products: newProducts, user: user}).catch((e) => console.log(e))
+   const removeFromFav = async (id : string) => {
+      const newProducts = products.filter((item) => (item!.id !== id))
+      const response = await axios.put("/api/favorites",  {id: id}).catch((e) => console.log(e))
       setProducts(newProducts);
       if(response?.data.error) {
-         dispatch(setToastPopup({visible: true, message: response.data.error, position: ToastPositions.AUTH, type: ToastType.ERROR, duration: 2000}))
+         dispatch(setToastPopup({visible: true, message: response.data.error, position: ToastPositions.AUTH, type: ToastType.ERROR, duration: 5000}))
       } else {
-         dispatch(setToastPopup({visible: true, message: response?.data.message, position: ToastPositions.AUTH, type: ToastType.BLACK, duration: 2000}))
+         dispatch(setToastPopup({visible: true, message: response?.data.message, position: ToastPositions.AUTH, type: ToastType.SUCCESS, duration: 2500}))
       }
    };
 
-   if (products?.length === 0 ){
+   useEffect(() => {
+         getFetch("/api/favorites",{}).then((response) => {
+               setProducts(response)
+         }).catch((error) => {
+            dispatch(setToastPopup({visible: true, message: error, position: ToastPositions.AUTH, type: ToastType.ERROR, duration: 5000}))
+         }).finally(() => {
+            setIsWaiting(false)
+         })
+   }, []);
+
+   if(isWaiting) {
       return (
-          <div></div>
+          <div className="h-[60vh] flex flex-col justify-center items-center">
+             <ScaleLoader height={40} color="black"/>
+          </div>
       )
    }
 
+   if (products?.length === 0) {
+      return (
+          <div className={'flex flex-col gap-1 justify-center items-center h-[50vh] sm:h-[50vh] w-full'}>
+             <img src="/empty-box.png" alt="" className="h-16 w-16 sm:h-24 sm:w-24"/>
+             <span className="text-xl sm:text-3xl font-medium">You have no favorites!</span>
+             <button className="bg-black text-white font-bold text-base px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg mt-2 sm:mt-6 hover:bg-gray-700" onClick={() => router.push("/store")}>Go Shopping
+             </button>
+          </div>
+      )
+   }
 
    return (
        <div className="Container grid grid-cols-2 lg:grid-cols-3 mt-6 w-full gap-y-6 gap-5 text-black mb-10">
@@ -52,7 +80,7 @@ const ClientFavorites : FC<ClientFavoritesProps> = ({user}) => {
                            alt="Image"
                        />
                     </Link>
-                       <div className="absolute sm:top-7 sm:right-7 top-2 right-2 cursor-pointer" onClick={() => removeFromFav(product)}>
+                       <div className="absolute sm:top-7 sm:right-7 top-2 right-2 cursor-pointer" onClick={() => removeFromFav(product.id)}>
                              <div className="relative top-1 sm:top-0 h-8 w-[34px] sm:h-12 sm:w-12 rounded-full bg-white">
                              </div>
                              <svg className="z-0 absolute h-6 sm:h-9 top-2 left-[4.5px] sm:top-[7px] sm:left-[6px]" viewBox="2 2 20 20"

@@ -70,7 +70,7 @@ export async function PUT(req: Request) {
    const body = await req.json();
    const currentUser  = await getCurrentUser();
    if (!currentUser) {
-      return NextResponse.error();
+      return NextResponse.json({error: `Log into your account`})
    }
 
    try {
@@ -86,6 +86,20 @@ export async function PUT(req: Request) {
       });
       return NextResponse.json("Success")
 
+   } catch (e) {
+      console.log(e)
+   }
+}
+
+
+export async function GET(req: Request) {
+   try {
+      const currentUser  = await getCurrentUser();
+      console.log(currentUser)
+      if (!currentUser) {
+         return NextResponse.json({error: `Log into your account`})
+      }
+      return NextResponse.json(currentUser.cart)
    } catch (e) {
       console.log(e)
    }
