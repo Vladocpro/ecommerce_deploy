@@ -61,12 +61,12 @@ const ClientProduct =  ({product}: {product: Product }) => {
          }
       }
       if(action === ButtonAction.ADDTOFAV) {
-         const response = await axios.patch("/api/favorites", {product: product}).catch((e) => console.log(e))
+         const response = await axios.patch("/api/favorites", {id: product.id}).catch((e) => console.log(e))
          if(response?.data.error) {
             if(response.data.error === "Log into your account") {
                dispatch(setAuthPopup(true))
             }
-            // dispatch(setToastPopup({visible: true, message: response.data.error, position: ToastPositions.AUTH, type: ToastType.ERROR, duration: 2000}))
+            dispatch(setToastPopup({visible: true, message: response.data.error, position: ToastPositions.AUTH, type: ToastType.ERROR, duration: 5000}))
          } else {
             dispatch(setToastPopup({visible: true, message: response?.data.message, position: ToastPositions.AUTH, type: ToastType.SUCCESS, duration: 2500}))
          }

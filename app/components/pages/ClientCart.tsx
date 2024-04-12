@@ -5,7 +5,7 @@ import React, {FC, useEffect, useState} from 'react';
 import Image from "next/image";
 import {Product, User} from "../../types";
 import PriceComponent from "../PriceComponent";
-import {postFetch} from "../../../lib/fetcher";
+import {getFetch, postFetch} from "../../../lib/fetcher";
 import Link from "next/link";
 import {setToastPopup, ToastPositions, ToastType} from "../../redux/slices/modals";
 import axios from "axios";
@@ -13,6 +13,7 @@ import {useDispatch} from "react-redux";
 import DropDownSelect from "../dropdown/DropDownSelect";
 import Tooltip from "../../components/Tooltip";
 import {useRouter} from "next/navigation";
+import {ScaleLoader} from "react-spinners";
 
 
 enum ButtonAction {
@@ -28,8 +29,8 @@ interface ClientCartProps {
 }
 
 const ClientCart : FC<ClientCartProps> = ({user}) => {
-   const [currentUser, setCurrentUser] = useState<User | null>(user)
-   const [products, setProducts] = useState<Product[] | null>(user.cart)
+   const [isWaiting, setIsWaiting] = useState<boolean>(true)
+   const [products, setProducts] = useState<Product[] | null>([])
    const [totals, setTotals] = useState<ITotals>({price: 0, quantity: 0})
    const dispatch = useDispatch()
    const router = useRouter()
@@ -88,7 +89,7 @@ const ClientCart : FC<ClientCartProps> = ({user}) => {
       }
       if (action === ButtonAction.ADDTOFAV) {
          const {size,  quantity, ...originalProduct} = product
-         const response = await axios.patch("/api/favorites", {product: originalProduct}).catch((e) => console.log(e))
+         const response = await axios.patch("/api/favorites", {id: originalProduct.id}).catch((e) => console.log(e))
          if(response?.data.error) {
             dispatch(setToastPopup({visible: true, message: response.data.error, position: ToastPositions.AUTH, type: ToastType.ERROR, duration: 5000}))
          } else {
@@ -108,7 +109,7 @@ const ClientCart : FC<ClientCartProps> = ({user}) => {
          }))
          return;
       }
-      const  { url }  = await postFetch('/api/makePayment', {items: products, user: currentUser});
+      const  { url }  = await postFetch('/api/makePayment', {items: products, user: user});
       window.location.assign(url)
    }
 
@@ -117,8 +118,24 @@ const ClientCart : FC<ClientCartProps> = ({user}) => {
    }, [products]);
 
    useEffect(() => {
-      if(user.cart)setTotals(getTotals(user.cart))
+      getFetch("/api/cart").then((response) => {
+         setProducts(response)
+         setTotals(getTotals(response))
+      }).catch((error) => {
+         dispatch(setToastPopup({visible: true, message: error, position: ToastPositions.AUTH, type: ToastType.ERROR, duration: 5000}))
+      }).finally(() => {
+         setIsWaiting(false)
+      })
    }, []);
+
+
+   if(isWaiting) {
+      return (
+          <div className="h-[60vh] flex flex-col justify-center items-center">
+             <ScaleLoader height={40} color="black"/>
+          </div>
+      )
+   }
 
    if(products?.length === 0)  {
       return (
@@ -133,7 +150,7 @@ const ClientCart : FC<ClientCartProps> = ({user}) => {
    }
 
 
-   if(!currentUser || !products) {
+   if(!user || !products) {
       return (
           <div>
           </div>
@@ -141,7 +158,7 @@ const ClientCart : FC<ClientCartProps> = ({user}) => {
    }
 
    return (
-       <div className="Container  grid lg:grid-cols-[minmax(440px,_740px)_minmax(260px,_340px)] grid-cols-1 gap-16 justify-around mt-12 pb-5">
+       <div className="Container  grid lg:grid-cols-[minmax(440px,_740px)_minmax(260px,_340px)] grid-cols-1 gap-16 justify-center mt-12 pb-5">
           <div className="space-y-4">
              <div className="mb-6 text-center lg:text-left">
                 <h1 className="text-2xl">Cart</h1>
@@ -172,7 +189,7 @@ const ClientCart : FC<ClientCartProps> = ({user}) => {
                           <div className="text-gray-500 mobile:text-sm">
                              <DropDownSelect
                                  // @ts-ignore
-                                 title={"Quantity: " + product.quantity.toString()} changeTittle={true}
+                                 title={"Quantity: " + product.quantity?.toString()} changeTittle={true}
                                  // @ts-ignore
                                  limitQuantity={product.sizes.find((iterationSize) => iterationSize.title === product.size)?.quantity}
                                  quantity={product.quantity}

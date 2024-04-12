@@ -37,3 +37,27 @@ export default async function getCurrentUser() {
    }
 }
 
+export async function getUserFavorites() {
+   try {
+      const session = await getSession();
+
+      if (!session?.user?.email) {
+         return null;
+      }
+
+      // @ts-ignore
+      const currentUser: User  = await prisma.user.findUnique({
+         where: {
+            email: session.user.email as string,
+         }
+      });
+
+      if (!currentUser) {
+         return null;
+      }
+
+      return currentUser.favorites
+   } catch (error: any) {
+      return null;
+   }
+}
