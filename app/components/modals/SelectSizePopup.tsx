@@ -82,7 +82,7 @@ const SelectSizePopup = () => {
                               ))}
                            </ul>
 
-                           <button className="flex-shrink bg-black text-white rounded-full transition-all duration-200 py-[15px] mt-4 hover:bg-gray-500 font-medium" onClick={() => addToBag()}>Add to Bag</button>
+                           <button className="flex-shrink bg-black text-white rounded-full transition-all duration-200 py-[15px] mt-4 hover:bg-gray-500 font-medium" onClick={() => addToBag()}>Add to Cart</button>
                         </div>
 
                      </div>

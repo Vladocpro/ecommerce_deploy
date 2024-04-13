@@ -21,11 +21,12 @@ export async function getUserAndOrder(sessionId : string) {
    const user = await getCurrentUser()
 
    if(user === null) return undefined
+   if(typeof sessionId !== "string") return {error: "Access Denied"}
 
    const order = await prisma.order.findUnique({
       where: {
          // @ts-ignore
-         sessionId: sessionId
+         sessionId: sessionId,
       }
    })
    if(user.id !== order?.userId) {

@@ -17,6 +17,7 @@ model User {
   emailVerified DateTime?
   image         String?
   password      String?
+  role          String    @default("Customer")
   orders        Json[]    @default([])
   favorites     Json[]    @default([])
   cart          Json[]    @default([])
@@ -57,15 +58,17 @@ model Product {
 }
 
 model Order {
-  id              String @id @default(auto()) @map("_id") @db.ObjectId
-  tracking_number String @unique @default(uuid())
-  userId          String @db.ObjectId
-  paymentIntent   String @unique
-  sessionId       String @unique
-  currency        String
-  items           Json[]
-  amountSubtotal  Float
-  shipping        Int
-  amountTotal     Float
-  date            String
+  id             String @id @default(auto()) @map("_id") @db.ObjectId
+  trackingNumber String @unique @default(uuid())
+  userId         String @db.ObjectId
+  paymentIntent  String @unique
+  sessionId      String @unique
+  currency       String
+  items          Json[]
+  amountSubtotal Float
+  shipping       Int
+  amountTotal    Float
+  date           String
+  customerName   String @default("")
+  customerEmail  String @default("")
 }

@@ -140,7 +140,7 @@ const ClientCart : FC<ClientCartProps> = ({user}) => {
 
    if(products?.length === 0)  {
       return (
-         <div className={'flex flex-col gap-1 justify-center items-center h-[60vh] sm:h-[70vh] w-full'}>
+         <div className={'flex flex-col gap-1 justify-center items-center h-full w-full'}>
             <img src="/empty-box.png" alt="" className="h-16 w-16 sm:h-24 sm:w-24"/>
             <span className="text-xl sm:text-3xl font-medium">Your Cart is Empty!</span>
             <button className="bg-black text-white font-bold text-base px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg mt-2 sm:mt-6 hover:bg-gray-700"
