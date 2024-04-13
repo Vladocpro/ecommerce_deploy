@@ -11,7 +11,6 @@ const HOME = () => {
           </svg>
              <span className="text-2xl font-medium">Payment was declined</span>
           <Link href="/" className="mt-3 text-xl font-medium px-7 py-1 border-[2px] border-black rounded-lg bg-black text-white transition-all duration-300">Go Home</Link>
-
        </div>
    );
 };

@@ -3,6 +3,7 @@ import { headers } from "next/headers"
 import Stripe from "stripe";
 import * as process from "process";
 import prisma from "../../../../lib/prismadb";
+import {nanoid} from "nanoid";
 
 
 async function getCartItems(lineItems : any, stripe : any) {
@@ -15,6 +16,8 @@ async function getCartItems(lineItems : any, stripe : any) {
          cartItems.push({
             productId: product.metadata.productId,
             size: product.metadata.size,
+            category: product.metadata.category,
+            gender: product.metadata.gender,
             name: product.name,
             price: item.price.unit_amount_decimal / 100,
             quantity: item.quantity,
@@ -48,11 +51,10 @@ export async function POST(req: Request) {
    }
 
    const session = event.data.object as Stripe.Checkout.Session
-
    if (event.type === "checkout.session.completed") {
       const lineItems = await stripe.checkout.sessions.listLineItems(session.id);
       const orderItems = await getCartItems(lineItems, stripe)
-      console.log(orderItems)
+
       const date = new Date(session.created * 1000);
       const formattedDate = `${date.getDate()} ${date.toLocaleString('default', { month: 'short' })} ${date.getFullYear()}`;
       try {
@@ -60,13 +62,16 @@ export async function POST(req: Request) {
             data: {
                userId: session.client_reference_id,
                items: orderItems,
+               trackingNumber: nanoid(),
                amountSubtotal: session.amount_subtotal / 100,
                shipping: session.shipping_cost?.amount_total,
                amountTotal: session.amount_total / 100,
                date: formattedDate,
                currency: session.currency,
                paymentIntent: session.payment_intent,
-               sessionId: session.id
+               sessionId: session.id,
+               customerName: session.customer_details?.name,
+               customerEmail: session.customer_details?.email,
             },
          })
       } catch (error) {

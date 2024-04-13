@@ -29,6 +29,8 @@ export type Order = {
    paymentIntent   :String
    sessionId       :String
    currency        :String
+   customerName    :String
+   customerEmail   :String
    items           :any[]
    amountSubtotal  :number
    shipping        :number

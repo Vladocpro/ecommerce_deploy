@@ -15,6 +15,7 @@ const HOME = async () => {
    }
 
    return (
+       // @ts-ignore
        <ClientOrders currentUser={data?.user} userOrders={data?.orders}/>
    )
 };

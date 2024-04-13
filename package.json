@@ -25,6 +25,7 @@
     "eslint-config-next": "13.4.9",
     "jose": "^4.14.4",
     "lodash.debounce": "^4.0.8",
+    "nanoid": "^5.0.7",
     "next": "13.4.9",
     "next-auth": "^4.22.1",
     "next-cloudinary": "^4.13.1",

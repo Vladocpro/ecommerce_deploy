@@ -1,67 +1,34 @@
 "use client"
 
-import React, {FC, useEffect, useMemo, useRef, useState} from 'react';
-import {useRouter, useSearchParams} from "next/navigation";
+import React, {FC, useMemo, useRef, useState} from 'react';
 import useClickOutside from "../useClickOutside";
-import qs from "query-string";
 
 interface DropDownSelectProps {
    containerStyles? :string,
+   handleChange: (sortBy: string) => void,
    itemStyles? :string,
    constTitle?: string,
    svgStyles?: string,
    svgBox?: string,
+   value:string,
    isExpanded: boolean,
    options: any[]
 }
 
 
-const DropDownSelect: FC<DropDownSelectProps> = ({ svgStyles, svgBox, itemStyles,containerStyles, isExpanded,  options}) => {
+const DropDownOrders: FC<DropDownSelectProps> = ({ svgStyles,value,  svgBox,handleChange, itemStyles,containerStyles, isExpanded,  options}) => {
    const [isOpen, setIsOpen] = useState<boolean>(isExpanded)
-   const params = useSearchParams()
-   const router = useRouter()
    const dropdownRef = useRef<HTMLDivElement | null>(null)
    useClickOutside(dropdownRef, () => {
       setIsOpen(false);
    });
 
-   const dropDownTitle = useMemo(() => {
-      const tempSortBy = params?.get("sortBy")
-      if(!tempSortBy || tempSortBy === "" || tempSortBy === "Sort By") {
-         return "Sort By"
-      }
-      return tempSortBy
-   }, [params])
-
-   const pushParam = (title: string) => {
-      if(title === "" || title === "Sort By") {
-         return
-      }
-      let currentQuery = {};
-      if(params) {
-         currentQuery = qs.parse(params.toString())
-      }
-
-      let updatedQuery: any = Object.assign({}, currentQuery)
-      if(updatedQuery.sortBy === "Sort By") {
-         delete updatedQuery.sortBy
-      } else {
-         updatedQuery.sortBy = title
-      }
-
-      const url = qs.stringifyUrl({
-         url: "/store",
-         query: updatedQuery
-      }, {skipNull: true})
-
-      router.push(url)
-   };
 
    return (
-       <div className="relative" ref={dropdownRef}>
+       <div className="relative hidden sm:block" ref={dropdownRef}>
 
-          <div className="flex gap-3 items-center px-1 cursor-pointer select-none " onClick={() => setIsOpen(!isOpen)}>
-             <div className="text-lg font-medium">{dropDownTitle}</div>
+          <div className="flex gap-3 items-center pl-1 cursor-pointer select-none " onClick={() => setIsOpen(!isOpen)}>
+             <div className="text-lg font-medium">{value}</div>
              <div className={`relative w-8 h-8 ${svgBox}`}>
                 <hr className={`absolute h-[2.5px] w-4 rounded-xl bottom-[13px] left-0.5    ${!isOpen ? "rotate-45" :  "-rotate-45"} ${svgStyles} transition-all duration-300 bg-black`}/>
                 <hr className={`absolute h-[2.5px] w-4 rounded-xl bottom-[13px] right-1   ${!isOpen ? "-rotate-45" : "rotate-45"}    ${svgStyles}    transition-all duration-300 bg-black`}/>
@@ -72,7 +39,7 @@ const DropDownSelect: FC<DropDownSelectProps> = ({ svgStyles, svgBox, itemStyles
              {options.map((item, index) => (
                  <div key={index} onClick={() => {
                     setIsOpen(!isOpen)
-                    pushParam(item);
+                    handleChange(item)
                  }} className={` cursor-pointer hover:text-gray-400 ${itemStyles} rounded-md`}>
                     {item}
                  </div>
@@ -82,4 +49,4 @@ const DropDownSelect: FC<DropDownSelectProps> = ({ svgStyles, svgBox, itemStyles
    );
 };
 
-export default DropDownSelect;
+export default DropDownOrders;
