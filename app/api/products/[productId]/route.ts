@@ -12,6 +12,9 @@ export async function GET(req : any, { params }: { params: IParams }, res : Next
             id: params.productId
          }
       });
+      if(product === null) {
+         return  new Response("Couldn't find product!", {status: 404})
+      }
       return NextResponse.json(product)
    } catch (error : any) {
       console.log(error)
