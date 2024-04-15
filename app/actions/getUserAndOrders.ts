@@ -6,6 +6,7 @@ export async function getUserAndOrders() {
    const user = await getCurrentUser()
 
    if(user === null) return undefined
+   // @ts-ignore
    const orders: Order[] = await prisma.order.findMany({
       where: {
          userId: user.id
