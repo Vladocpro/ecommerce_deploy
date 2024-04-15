@@ -36,6 +36,7 @@ const ClientProduct =  ({product}: {product: Product }) => {
    const ref = useRef(null);
    const [sliderImage, setSliderImage] = useState<number>(0)
    const [sizes, setSizes] =useState<string[]>([]);
+   const [loading, setLoading] = useState<boolean>(true)
    const router = useRouter()
 
    const buttonClick = async  (action : ButtonAction) => {
@@ -119,7 +120,7 @@ const ClientProduct =  ({product}: {product: Product }) => {
    }, []);
 
 
-   if (product === undefined || product === null) {
+   if (product === undefined || product === null || loading) {
       return (
           <></>
       )
@@ -158,7 +159,7 @@ const ClientProduct =  ({product}: {product: Product }) => {
                     removeArrowOnDeviceType={["tablet", "mobile"]}
                     itemClass="carousel-item-padding-40-px">
                    {product.images.map((slide) => (
-                       <Image src={slide} priority={true} key={slide} width={630} height={650}  className="object-contain mx-auto select-none pointer-events-none pr-4 sm:pr-0 lg:w-[110px] xl:w-[136px]" alt=""/>
+                       <Image src={slide} priority={true} key={slide} width={630} height={650} className="object-contain mx-auto select-none pointer-events-none pr-4 sm:pr-0 lg:w-[110px] xl:w-[136px]" alt=""/>
                    ))}
                 </Carousel>
              </div>
