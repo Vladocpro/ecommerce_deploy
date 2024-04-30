@@ -3,6 +3,7 @@ export type User = {
    email?:         string,
    password?:      string,
    orders:        string[],
+   role:          string,
    favorites:     Product[],
    cart:          Product[],
    createdAt:     Date,
