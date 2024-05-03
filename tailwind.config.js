@@ -11,7 +11,7 @@ module.exports = {
         productSizeSection: "repeat(auto-fit, minmax(330px, 440px))",
       },
       screens: {
-        'mobile': {'max': '470px'},
+        'mobile': {'max': '500px'},
         'cartPage': {'max': '850px'},
       },
       transitionProperty: {
