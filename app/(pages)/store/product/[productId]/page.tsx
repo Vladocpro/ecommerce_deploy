@@ -75,8 +75,10 @@ const HOME =  () => {
             if(response.data.error === "Log into your account") {
                dispatch(setAuthPopup(true))
             }
+            router.refresh()
             dispatch(setToastPopup({visible: true, message: response.data.error, position: ToastPositions.AUTH, type: ToastType.ERROR, duration: 5000}))
          } else {
+            router.refresh()
             dispatch(setToastPopup({visible: true, message: response?.data.message, position: ToastPositions.AUTH, type: ToastType.SUCCESS, duration: 2500}))
          }
       }
