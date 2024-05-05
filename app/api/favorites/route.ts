@@ -63,23 +63,3 @@ export async function PUT(req: Request) {
    }
 }
 
-export async function GET(req: Request) {
-   try {
-      const currentUser  = await getCurrentUser();
-      if (!currentUser) {
-         return NextResponse.json({error: `Log into your account`})
-      }
-      let userFavorites = [...(currentUser.favorites || [])];
-      const favorites = await prisma.product.findMany({
-         where: {
-            id: {
-               // @ts-ignore
-               in: userFavorites
-            }
-         }
-      })
-      return NextResponse.json(favorites)
-   } catch (e) {
-      console.log(e)
-   }
-}

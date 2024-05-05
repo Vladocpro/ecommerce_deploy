@@ -51,6 +51,7 @@ const ClientCart : FC<ClientCartProps> = ({user}) => {
       },0).toFixed(2))
       return {price: totalPrice, quantity: counter}
    }
+
    const removeProduct = (product : Product) : Product[]=> {
       return  products!.filter((filterProduct: Product) => {
          if(filterProduct!.id === product.id && filterProduct!.size === product.size) {
@@ -95,6 +96,7 @@ const ClientCart : FC<ClientCartProps> = ({user}) => {
             dispatch(setToastPopup({visible: true, message: response.data.error, position: ToastPositions.AUTH, type: ToastType.ERROR, duration: 5000}))
          } else {
             dispatch(setToastPopup({visible: true, message: response?.data.message, position: ToastPositions.AUTH, type: ToastType.SUCCESS, duration: 2500}))
+            router.refresh()
          }
       }
    };
@@ -119,14 +121,9 @@ const ClientCart : FC<ClientCartProps> = ({user}) => {
    }, [products]);
 
    useEffect(() => {
-      getFetch("/api/cart").then((response) => {
-         setProducts(response)
-         setTotals(getTotals(response))
-      }).catch((error) => {
-         dispatch(setToastPopup({visible: true, message: error, position: ToastPositions.AUTH, type: ToastType.ERROR, duration: 5000}))
-      }).finally(() => {
-         setIsWaiting(false)
-      })
+      setProducts(user.cart)
+      setTotals(getTotals(user.cart))
+      setIsWaiting(false)
    }, []);
 
 

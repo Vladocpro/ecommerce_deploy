@@ -2,21 +2,18 @@
 import React from 'react';
 import ClientOrders from "../../components/pages/ClientOrders";
 import {getUserAndOrders} from "../../actions/getUserAndOrders";
+import {redirect} from "next/navigation";
 const HOME = async () => {
 
-   const data = await getUserAndOrders();
+   const response = await getUserAndOrders();
 
-   if(!data) {
-      return (
-          <div>
-
-          </div>
-      )
+   if(!response?.user) {
+      redirect('/')
    }
 
    return (
        // @ts-ignore
-       <ClientOrders currentUser={data?.user} userOrders={data?.orders}/>
+       <ClientOrders currentUser={response?.user} userOrders={response?.orders}/>
    )
 };
 

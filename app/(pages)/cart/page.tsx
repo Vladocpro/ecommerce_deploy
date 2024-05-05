@@ -3,17 +3,13 @@
 import React from 'react';
 import getCurrentUser from "../../actions/getCurrentUser";
 import ClientCart from "../../components/pages/ClientCart";
+import {redirect} from "next/navigation";
 
 const Home =  async () => {
-
    const currentUser = await getCurrentUser()
 
-
    if(!currentUser) {
-      return (
-          <div>
-          </div>
-      )
+      redirect('/')
    }
 
    return (

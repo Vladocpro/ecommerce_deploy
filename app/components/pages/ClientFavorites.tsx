@@ -9,16 +9,13 @@ import Link from "next/link";
 import Image from "next/image";
 import PriceComponent from "../PriceComponent";
 import {useRouter} from "next/navigation";
-import {ScaleLoader} from "react-spinners";
-import {getFetch} from "../../../lib/fetcher";
 
 interface ClientFavoritesProps {
-   user : User
+   favorites : Product[]
 }
 
-const ClientFavorites : FC<ClientFavoritesProps> = ({user}) => {
-   const [products, setProducts] = useState<Product[]>(user.favorites)
-   const [isWaiting, setIsWaiting] = useState<boolean>(true)
+const ClientFavorites : FC<ClientFavoritesProps> = ({favorites}) => {
+   const [products, setProducts] = useState<Product[]>(favorites)
 
    const dispatch = useDispatch();
    const router = useRouter()
@@ -32,26 +29,10 @@ const ClientFavorites : FC<ClientFavoritesProps> = ({user}) => {
          dispatch(setToastPopup({visible: true, message: response.data.error, position: ToastPositions.AUTH, type: ToastType.ERROR, duration: 5000}))
       } else {
          dispatch(setToastPopup({visible: true, message: response?.data.message, position: ToastPositions.AUTH, type: ToastType.SUCCESS, duration: 2500}))
+         router.refresh()
       }
    };
 
-   useEffect(() => {
-         getFetch("/api/favorites",{}).then((response) => {
-               setProducts(response)
-         }).catch((error) => {
-            dispatch(setToastPopup({visible: true, message: error, position: ToastPositions.AUTH, type: ToastType.ERROR, duration: 5000}))
-         }).finally(() => {
-            setIsWaiting(false)
-         })
-   }, []);
-
-   if(isWaiting) {
-      return (
-          <div className="h-[60vh] flex flex-col justify-center items-center">
-             <ScaleLoader height={40} color="black"/>
-          </div>
-      )
-   }
 
    if (products?.length === 0) {
       return (
