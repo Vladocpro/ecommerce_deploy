@@ -94,7 +94,9 @@ export async function PUT(req: Request) {
 
 export async function GET(req: Request) {
    try {
-      const currentUser  = await getCurrentUser();
+      const body = await req.json();
+      console.log(body)
+      // const currentUser  = await getCurrentUser();
       if (!currentUser) {
          return NextResponse.json({error: `Log into your account`})
       }

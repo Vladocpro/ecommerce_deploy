@@ -1,20 +1,19 @@
 import React from 'react';
 import getCurrentUser from "../../actions/getCurrentUser";
 import ClientFavorites from "../../components/pages/ClientFavorites";
+import {getUserFavorites} from "../../actions/getFavorites";
+import {redirect} from "next/navigation";
 
 const HOME = async () => {
-   const currentUser = await getCurrentUser()
+   const response = await getUserFavorites()
 
-   if(!currentUser) {
-      return (
-          <div>
-          </div>
-      )
+   if(!response?.user) {
+      redirect('/')
    }
 
 return (
     // @ts-ignore
-    <ClientFavorites user={currentUser}/>
+    <ClientFavorites favorites={response.favorites}/>
    )
 };
 
