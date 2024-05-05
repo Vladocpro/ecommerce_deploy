@@ -1,3 +1,5 @@
+"use client"
+
 import {useEffect} from 'react';
 
 const useClickOutside = (ref :any, onClickOutside: () => void) => {
