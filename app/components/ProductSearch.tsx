@@ -1,3 +1,5 @@
+"use client"
+
 import React, {FC, useEffect, useRef, useState} from "react";
 import debounce from "lodash.debounce";
 import useClickOutside from "../components/useClickOutside";
