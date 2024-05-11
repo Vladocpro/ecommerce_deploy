@@ -215,7 +215,7 @@ const HOME =  () => {
                 </ul>
                 <div className="flex flex-col gap-y-2 w-full">
                    <button onClick={() => buttonClick(ButtonAction.ADDTOBAG)} className="bg-black text-white rounded-full transition-all duration-200 hover:bg-gray-500 py-3.5 sm:py-[18px]  ">Add to Cart</button>
-                   <button onClick={() => buttonClick(ButtonAction.ADDTOFAV)} className="border-2 border-gray-300 hover:border-black transition-all duration-100 rounded-full py-3 sm:py-4 ">Add to Favorite</button>
+                   <button onClick={() => buttonClick(ButtonAction.ADDTOFAV)} className="border-2 border-gray-300 hover:border-black transition-all duration-100 rounded-full py-3 sm:py-4 ">Add to Favorites</button>
                 </div>
              </div>
           </div>

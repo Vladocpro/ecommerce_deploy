@@ -59,7 +59,7 @@ const Filters = () => {
        <div className="flex items-center justify-between mt-3 mb-5">
           <div className="hidden lg:flex gap-[110px]">
              <span className="inline-block text-xl ml-1.5 font-medium  mx-auto">Filters</span>
-             <Tooltip text="Resert Filters" onClick={() => router.replace("/store")} containerStyles="headerSvg after:h-[135%] after:w-[135%] after:left-[-4.5px] after:top-[-4.75px]">
+             <Tooltip text="Reset Filters" onClick={() => router.replace("/store")} containerStyles="headerSvg after:h-[135%] after:w-[135%] after:left-[-4.5px] after:top-[-4.75px]">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7 cursor-pointer" viewBox="0 0 24 24"
                      strokeWidth="1.5" stroke="#2c3e50" fill="none" strokeLinecap="round" strokeLinejoin="round">
                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
@@ -89,7 +89,7 @@ const Filters = () => {
                 </svg>
                 <input type="text" onChange={handleChange} id="search" value={searchValue} className="bg-gray-100 outline-black  pl-9 pr-5 focus:placeholder:text-gray-900 hover:placeholder:text-gray-900 hover:bg-gray-200 focus:bg-gray-200 mx-5 py-2 rounded-full mr-10 " placeholder="Search"/>
              </div>
-             <DropDownSortBy isExpanded={false} itemStyles="px-5" containerStyles="flex flex-col gap-[3px] min-w-max shadow-xl bg-gray-100 px-1 py-2" options={["Featured","Price: High-Low", "Price: Low-High"]}/>
+                <DropDownSortBy isExpanded={false} itemStyles="px-5 hover:bg-black hover:text-white py-1 text-gray-700 font-medium" containerStyles="flex flex-col min-w-max shadow-xl bg-gray-100" options={["Featured","Price: High-Low", "Price: Low-High"]}/>
           </div>
 
        </div>
