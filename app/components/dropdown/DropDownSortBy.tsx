@@ -54,8 +54,9 @@ const DropDownSelect: FC<DropDownSelectProps> = ({ svgStyles, svgBox, itemStyles
       const tempSortBy = params?.get("sortBy")
       if(!tempSortBy || tempSortBy === "") {
          setDropDownTitle("Sort By")
+      } else {
+         setDropDownTitle(tempSortBy)
       }
-      setDropDownTitle(tempSortBy)
    }, [params]);
 
    return (
