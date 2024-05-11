@@ -52,7 +52,7 @@ const NavLinks: FC<NavLinkProps> =  ({user})  => {
              </div>
           </Tooltip>
 
-          <Tooltip text="My orders" onClick={() => user !== null ? router.push("/orders") : dispatch(setAuthPopup(true))}>
+          <Tooltip text="My Orders" onClick={() => user !== null ? router.push("/orders") : dispatch(setAuthPopup(true))}>
              <div className="headerSvg">
                 <svg viewBox="0 0 24 24" height={24} fill="black">
                    <line className="cls-1" x1="10" y1="7.5" x2="18" y2="7.5"/>

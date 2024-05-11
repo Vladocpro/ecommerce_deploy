@@ -82,8 +82,8 @@ const ClientOrders : FC<ClientOrdersProps> = ({currentUser, userOrders}) => {
                        className="bg-gray-100 pl-9 pr-5 mobile:w-full outline-black focus:placeholder:text-gray-900 hover:placeholder:text-gray-900 hover:bg-gray-200 focus:bg-gray-200 mx-5 py-2 rounded-full mr-10 "
                        placeholder="Search by Order"/>
              </div>
-             <DropDownOrders isExpanded={false} handleChange={handleChangeSort} value={sortBy} itemStyles="px-4"
-                             containerStyles="flex flex-col gap-[3px] min-w-max shadow-xl bg-gray-100 px-1 py-2" options={["Most Recent", "Least Recent"]}/>
+             <DropDownOrders isExpanded={false} handleChange={handleChangeSort} value={sortBy} itemStyles="px-5 hover:bg-black hover:text-white py-1 text-gray-700 font-medium"
+                             containerStyles="flex flex-col min-w-max shadow-xl bg-gray-100 px-1" options={["Most Recent", "Least Recent"]}/>
           </div>
 
           {filteredOrders.length === 0 && (

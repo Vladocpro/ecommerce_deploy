@@ -73,7 +73,7 @@ const DropDownSelect: FC<DropDownSelectProps> = ({ svgStyles, svgBox, itemStyles
                  <div key={index} onClick={() => {
                     setIsOpen(!isOpen)
                     pushParam(item);
-                 }} className={` cursor-pointer hover:text-gray-400 ${itemStyles} rounded-md`}>
+                 }} className={` cursor-pointer  ${itemStyles} rounded-md`}>
                     {item}
                  </div>
              ))}
