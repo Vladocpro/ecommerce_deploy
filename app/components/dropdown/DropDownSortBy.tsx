@@ -17,21 +17,14 @@ interface DropDownSelectProps {
 
 
 const DropDownSelect: FC<DropDownSelectProps> = ({ svgStyles, svgBox, itemStyles,containerStyles, isExpanded,  options}) => {
-   const [isOpen, setIsOpen] = useState<boolean>(isExpanded)
    const params = useSearchParams()
    const router = useRouter()
+   const [isOpen, setIsOpen] = useState<boolean>(isExpanded)
+   const [dropDownTitle, setDropDownTitle] = useState<string>(params?.get("sortBy") || "Sort By")
    const dropdownRef = useRef<HTMLDivElement | null>(null)
    useClickOutside(dropdownRef, () => {
       setIsOpen(false);
    });
-
-   const dropDownTitle = useMemo(() => {
-      const tempSortBy = params?.get("sortBy")
-      if(!tempSortBy || tempSortBy === "" || tempSortBy === "Sort By") {
-         return "Sort By"
-      }
-      return tempSortBy
-   }, [params])
 
    const pushParam = (title: string) => {
       if(title === "" || title === "Sort By") {
@@ -57,6 +50,14 @@ const DropDownSelect: FC<DropDownSelectProps> = ({ svgStyles, svgBox, itemStyles
       router.push(url)
    };
 
+   useEffect(() => {
+      const tempSortBy = params?.get("sortBy")
+      if(!tempSortBy || tempSortBy === "") {
+         setDropDownTitle("Sort By")
+      }
+      setDropDownTitle(tempSortBy)
+   }, [params]);
+
    return (
        <div className="relative" ref={dropdownRef}>
 
@@ -72,6 +73,7 @@ const DropDownSelect: FC<DropDownSelectProps> = ({ svgStyles, svgBox, itemStyles
              {options.map((item, index) => (
                  <div key={index} onClick={() => {
                     setIsOpen(!isOpen)
+                    setDropDownTitle(item)
                     pushParam(item);
                  }} className={` cursor-pointer  ${itemStyles} rounded-md`}>
                     {item}
