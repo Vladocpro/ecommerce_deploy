@@ -83,7 +83,7 @@ export async function getProducts(reqFilters: IFiltersState) {
           // @ts-ignore
          filteredProducts = response.filter(product =>
              // @ts-ignore
-             product.sizes.some((size : ISize) =>  reqFilters.sizes.find((sizeTitle) => sizeTitle === size.title) && size.isAvailable)
+             product.sizes.some((size : ISize) =>  reqFilters.sizes.find((sizeTitle) => sizeTitle === size.title) && size.quantity > 0)
          )
       }
 
