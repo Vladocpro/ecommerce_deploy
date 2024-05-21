@@ -192,7 +192,7 @@ const HOME =  () => {
              </div>
           </div>
 
-          <div className="mobile:mx-3 mx-auto lg:mx-0 mt-5 min-w-[305px] max-w-[400px] sm:max-w-[580px] md:max-w-[630px] lg:mt-0 lg:max-w-[350px] xl:max-w-[440px]">
+          <div className="mobile:mx-3 mx-auto lg:mx-0 mt-5 min-w-[305px] max-w-[400px] sm:max-w-[580px] md:max-w-[630px] lg:mt-0 lg:max-w-[350px] xl:max-w-[440px] w-full">
              <div className="flex flex-col w-full text-lg font-medium" >
                 <span className="text-2xl">{product?.title}</span>
                 <span className="text-gray-500 font-normal">{product?.category}</span>

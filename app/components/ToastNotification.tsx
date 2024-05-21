@@ -45,7 +45,7 @@ function Toast() {
            onClick={() => dispatch(closeToastPopup())}
        >
              <ToastIcon/>
-             <p className="inline-block font-medium">{toast.message}</p>
+             <p className="inline-block font-medium">{typeof toast.message === "string" ? toast.message : "Internal Server Error"}</p>
        </div>
    );
 }

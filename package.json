@@ -20,6 +20,7 @@
     "autoprefixer": "10.4.14",
     "axios": "^1.4.0",
     "bcrypt": "^5.1.0",
+    "cloudinary": "^2.2.0",
     "currency-symbol-map": "^5.1.0",
     "eslint": "8.44.0",
     "eslint-config-next": "13.4.9",

@@ -61,9 +61,6 @@ const modalsSlice = createSlice({
          state.selectSizePopup.product = action.payload.product;
       },
       setToastPopup: (state, action: PayloadAction<toastPopup>) => {
-         if (typeof action.payload.message !== 'string') {
-            return;
-         }
          state.toastPopup.message = action.payload.message;
          state.toastPopup.position = action.payload.position;
          state.toastPopup.type = action.payload.type;
