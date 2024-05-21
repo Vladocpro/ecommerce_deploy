@@ -30,12 +30,12 @@ const DropDownAdmin: FC<DropDownSelectProps> = ({ selectedOption,handleChange,  
              </div>
           </div>
 
-          <div className={`${isOpen ? "translate-y-2  opacity-100 visible pointer-events-auto" : "-translate-y-5 opacity-0 invisible pointer-events-none"} transition-all duration-300  rounded-lg select-none bg-black  absolute left-1 z-13`}>
+          <div className={`${isOpen ? "translate-y-2  opacity-100 visible pointer-events-auto" : "-translate-y-5 opacity-0 invisible pointer-events-none"} transition-all duration-300  rounded-lg select-none bg-gray-100 shadow-xl absolute left-1 z-13 `}>
              {options.map((item, index) => (
                  <div key={index} onClick={() => {
                     setIsOpen(!isOpen)
                     handleChange(item);
-                 }} className={`cursor-pointer px-4 text-white font-medium rounded-md`}>
+                 }} className={`cursor-pointer rounded-md px-5 hover:bg-black hover:text-white py-1 text-gray-700 font-medium`}>
                     {item}
                  </div>
              ))}

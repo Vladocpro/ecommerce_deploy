@@ -6,14 +6,17 @@ interface IParams {
 }
 
 export async function GET(req : any, { params }: { params: IParams }) {
-   console.log(params.productTitle)
-   const products = await prisma.product.findMany({
-      where: {
-         title: {
-            contains: params.productTitle,
-            mode: "insensitive",
+   try {
+      const products = await prisma.product.findMany({
+         where: {
+            title: {
+               contains: params.productTitle,
+               mode: "insensitive",
+            }
          }
-      }
-   })
-   return NextResponse.json(products)
+      })
+      return NextResponse.json(products)
+   } catch (error) {
+      console.log(error)
+   }
 }
