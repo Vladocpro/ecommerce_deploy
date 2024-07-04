@@ -1,34 +1,87 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Ecommerce Store
+
+Ecommerce Store, a web application built with Next.js, React, Typescript, NextAuth, MongoDB (with Prisma), Stripe, and TailwindCSS. This project is a fully functional online store for clothing, offering a seamless shopping experience with a range of features.
+
+## Table of Contents
+- [Introduction](#Introduction)
+- [Features](#Feature)
+- [Technologies Used](#Technologies-Used)
+- [Getting Started](#Getting-Started)
+- [Authentication](#Authentication)
+- [Shopping Experience](#Shopping-Experience)
+- [Order and Payment](#Order-and-Payment)
+- [Responsive Design](#Responsive-Design)
+
+## Introduction
+The Ecommerce Store is a Next.js application designed to showcase and sell a variety of sport clothing. The project highlights the store's key features, product listings, and an aesthetically pleasing design to enhance the user experience.
+
+## Features
+- **Homepage:** Learn more about the store and its new products and special offers.
+- **Product Listings:** Explore a comprehensive list of computer components available for purchase.
+- **Authentication:** Create an account, sign in, or use Google/GitHub accounts for quick access.
+- **Sorting and Filtering:** Easily find products with various sorting and filtering options.
+- **Wishlist and Cart:** Save desired items for later or add them to the shopping cart.
+- **Order and Payment:** Securely pay for your order using Stripe and view your order history.
+- **Admin Panel:** Create, Update or Delete products with Admin Panel which is only available for users with admin rights.
+
+## Technologies Used
+- **Next.js:** Framework for building React applications with server-side rendering and routing.
+- **React:** JavaScript library for building user interfaces.
+- **Typescript:** Superset of JavaScript that adds static types.
+- **NextAuth:** Authentication library for Next.js applications.
+- **MongoDB with Prisma:**  Database and database access layer for efficient data management.
+  Stripe: Payment processing platform for secure online transactions.
+- **Tailwind:** Utility-first CSS framework for building stylish and responsive designs.
 
 ## Getting Started
+To run the project locally, follow these steps:
 
-First, run the development server:
+1. **Clone the repository:** Clone this repository to your computer.
+   ```bash
+   git clone https://github.com/Vladocpro/ecommerce_deploy.git
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-```
+2. **Navigate to the project directory:**
+   ```bash
+   cd ecommerce_deploy
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+3. **Install dependencies::**
+   ```bash
+   npm install
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+4. **Set up environment variables:** You need to create .env file in the project root directory. Below are the necessary environment variables:
+    ```bash
+    DATABASE_URL="The connection URL for your MongoDB database. It specifies the location and authentication details for the database server."
+    NEXTAUTH_SECRET="A secret key used by NextAuth for signing and encrypting tokens. It enhances the security of user authentication."
+    JWT_SECRET_KEY="A secret key used for authentication and encrypting tokens."
+    GOOGLE_CLIENT_ID="The client ID for authenticating with Google."
+    GOOGLE_CLIENT_SECRET="The client secret associated with the Google client ID."
+    NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME="The Cloudinary cloud name, used for media asset management and delivery."
+    NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET="The Cloudinary cloud name, used for uploading media assets."
+    NEXT_PUBLIC_CLOUDINARY_API_KEY="The secret API key for interacting with the Cloudinary."
+    NEXT_PUBLIC_CLOUDINARY_API_SECRET="The secret key for interactions with Cloudinary."
+    STRIPE_API_KEY="The secret API key for interacting with the Stripe payment platform."
+    STRIPE_WEBHOOK_SECRET="The secret key for verifying Stripe webhook events."
+    NEXT_AUTH_URL="The base URL of your Next.js application. It is used by NextAuth to construct callback URLs and other authentication-related URLs. Adjust it based on your environment (e.g., http://localhost:3000 for local development)."
+    ```
+   Make sure to add the `.env` file to the `.gitignore` list to avoid exposing your secret keys.
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+5. **Run the development server:**
+   ```bash
+   npm run dev
 
-## Learn More
+After completing these steps, your application will be accessible at http://localhost:3000/.
 
-To learn more about Next.js, take a look at the following resources:
+## Authentication
+The application supports user authentication through traditional email/password credentials or by using Google account.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Shopping Experience
+Explore the store's diverse product listings with advanced sorting and filtering options. Add items to your wishlist or shopping cart for a personalized shopping experience.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+## Order and Payment
+Complete your purchase securely using the integrated Stripe payment system. Once paid, your order history will be accessible under the "Orders" tab.
 
-## Deploy on Vercel
+## Responsive Design
+The site is fully responsive, ensuring a seamless experience across various devices and screen sizes, thanks to the use of Tailwind CSS.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+**You can check out the deployed version of this project [here](https://ecom-store-deploy.vercel.app).**
