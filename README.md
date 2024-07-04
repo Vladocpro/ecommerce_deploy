@@ -4,7 +4,7 @@ Ecommerce Store, a web application built with Next.js, React, Typescript, NextAu
 
 ## Table of Contents
 - [Introduction](#Introduction)
-- [Features](#Feature)
+- [Features](#Features)
 - [Technologies Used](#Technologies-Used)
 - [Getting Started](#Getting-Started)
 - [Authentication](#Authentication)
@@ -13,11 +13,11 @@ Ecommerce Store, a web application built with Next.js, React, Typescript, NextAu
 - [Responsive Design](#Responsive-Design)
 
 ## Introduction
-The Ecommerce Store is a Next.js application designed to showcase and sell a variety of sport clothing. The project highlights the store's key features, product listings, and an aesthetically pleasing design to enhance the user experience.
+The Ecommerce Store is a Next.js application designed to showcase and sell a variety of sports clothing. The project highlights the store's key features, product listings, and an aesthetically pleasing design to enhance the user experience.
 
 ## Features
 - **Homepage:** Learn more about the store and its new products and special offers.
-- **Product Listings:** Explore a comprehensive list of computer components available for purchase.
+- **Product Listings:** Explore a comprehensive list of available clothing for purchase.
 - **Authentication:** Create an account, sign in, or use Google/GitHub accounts for quick access.
 - **Sorting and Filtering:** Easily find products with various sorting and filtering options.
 - **Wishlist and Cart:** Save desired items for later or add them to the shopping cart.
@@ -72,7 +72,7 @@ To run the project locally, follow these steps:
 After completing these steps, your application will be accessible at http://localhost:3000/.
 
 ## Authentication
-The application supports user authentication through traditional email/password credentials or by using Google account.
+The application supports user authentication through traditional email/password credentials or by using a Google account.
 
 ## Shopping Experience
 Explore the store's diverse product listings with advanced sorting and filtering options. Add items to your wishlist or shopping cart for a personalized shopping experience.
