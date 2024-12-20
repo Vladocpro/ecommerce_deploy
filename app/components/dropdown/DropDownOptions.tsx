@@ -105,9 +105,9 @@ const DropDownOptions : FC<DropDownOptionsProps> = ({title, titleStyles, svgStyl
           </div>
 
           <div
-              className={`${isOpen ? "translate-y-2  opacity-100 visible h-fit pointer-events-auto" : "-translate-y-1 opacity-0 invisible h-0 pointer-events-none"} flex flex-col relative gap-[1px] border-0 min-h-max min-w-max px-1 py-0 transition-all duration-300  rounded-lg select-none right-1`}>
+              className={`${isOpen ? "translate-y-2  opacity-100 visible h-auto pointer-events-auto" : "-translate-y-1 opacity-0 invisible h-0 pointer-events-none"} flex flex-col relative gap-[1px] border-0 min-w-max px-1 py-0 transition-all duration-300  rounded-lg select-none right-1`}>
              {options.map((item, index) => (
-                 <div className="flex items-center gap-2.5 bg-white px-3 py-2" key={item}>
+                 <div className={`flex items-center gap-2.5 bg-white px-3 py-2`} key={item}>
                     <input type="checkbox" id={`${title}Checkbox${index}`}
                            className={`peer relative left-0 h-7 w-7 shrink-0 cursor-pointer appearance-none rounded-md border border-gray-400 checked:border-black  outline-none after:absolute after:left-0
                         after:top-0 after:h-full after:w-full
