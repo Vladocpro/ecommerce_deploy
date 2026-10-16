@@ -1,16 +1,22 @@
 
 import React from 'react';
 import Image from "next/image";
-import getSymbolFromCurrency from 'currency-symbol-map'
 import {getUserAndOrder} from "../../actions/getUserAndOrders";
 import Link from "next/link";
+import {formatPrice} from "../../../lib/money";
+import {CATEGORY_LABELS, ORDER_STATUS_LABELS} from "../../constants";
+
+const formatDate = (date: Date) => new Intl.DateTimeFormat("en-GB", {day: "numeric", month: "short", year: "numeric"}).format(date)
 
 
+type Props = {
+   searchParams: Promise<{ session_id?: string }>
+}
 
-const HOME = async (props: any) => {
+const HOME = async ({searchParams}: Props) => {
 
 
-   const data = await getUserAndOrder(props.searchParams.session_id)
+   const data = await getUserAndOrder((await searchParams).session_id)
 
    if(data?.error) {
       return (
@@ -31,32 +37,43 @@ const HOME = async (props: any) => {
       );
    }
 
+   if (data?.pending) {
+      return (
+          <div className="flex flex-col justify-center items-center h-full gap-3">
+             <span className="text-2xl font-medium">We&apos;re confirming your payment</span>
+             <span className="text-gray-500">Refresh this page in a moment, or find the order in your Orders.</span>
+          </div>
+      )
+   }
+
    if (!data?.user || !data?.order) {
       return (
           <div></div>
       )
    }
 
+   const {order} = data
+   const address = order.shippingAddress
+
    return (
        <div className="flex justify-between flex-col md:gap-0 md:flex-row md:max-w-[750px]  lg:max-w-[1000px] xl:max-w-[1200px] w-full mt-5 mb-4 mx-auto pt-2.5 px-3">
 
           {/* Order Items */}
           <div className="flex flex-col gap-2.5">
-             {data?.order?.items.map((product: any) => (
-                 <div key={product.id}
+             {order.items.map((product) => (
+                 <div key={product.variantId}
                       className="flex gap-3 sm:gap-4 rounded-lg">
-                    {/*@ts-ignore*/}
-                    <Image src={product.image} width={150} height={150} className="w-[100px] h-[125px]" alt="Image"/>
+                    <Image src={product.image} width={150} height={150} className="w-[100px] h-[125px]" alt={product.title}/>
 
                     <div className="flex flex-col min-w-[130px] w-full pr-3  md:justify-center">
                                <span className="text-lg font-medium">
-                                  {product.name}
+                                  {product.title}
                                </span>
                        <span className="text-base font-medium">
-                                  {getSymbolFromCurrency(data.order.currency.toUpperCase())}{(product.price * product.quantity).toFixed(2)}
+                                  {formatPrice(product.unitPrice * product.quantity, order.currency)}
                                </span>
                        <span className="text-gray-500 mobile:text-sm">
-                              {product.gender + " " + product.category}
+                              {product.gender + " " + CATEGORY_LABELS[product.category]}
                               </span>
                        <span className="text-gray-500 mobile:w-[70px] w-[110px] mobile:text-sm">
                                  Size {product.size}
@@ -76,16 +93,16 @@ const HOME = async (props: any) => {
                 <span className="text-lg font-semibold">Details</span>
                 <div className="flex flex-col justify-between mt-2 gap-0.5">
                    <div className="flex justify-between">
-                      <span className="text-gray-500">Order</span>
-                      <span className="text-gray-500">{data.order.id}</span>
+                      <span className="text-gray-500">Order number</span>
+                      <span className="text-gray-500">{order.orderNumber}</span>
                    </div>
                    <div className="flex justify-between">
                       <span className="text-gray-500">Date</span>
-                      <span className="text-gray-500">{data.order.date}</span>
+                      <span className="text-gray-500">{formatDate(order.createdAt)}</span>
                    </div>
                    <div className="flex justify-between">
-                      <span className="text-gray-500">Tracking Number</span>
-                      <span className="text-gray-500">{data.order.trackingNumber}</span>
+                      <span className="text-gray-500">Status</span>
+                      <span className="text-gray-500">{ORDER_STATUS_LABELS[order.status]}</span>
                    </div>
                 </div>
                 <hr className="my-3 h-[1.25px] w-full bg-gray-300"/>
@@ -95,29 +112,44 @@ const HOME = async (props: any) => {
                 <div className="flex flex-col justify-between mt-2 gap-0.5">
                    <div className="flex justify-between">
                       <span className="text-gray-500">Name</span>
-                      <span className="text-gray-500">{data.order.customerName}</span>
+                      <span className="text-gray-500">{order.customerName}</span>
                    </div>
                    <div className="flex justify-between">
                       <span className="text-gray-500">Email</span>
-                      <span className="text-gray-500">{data.order.customerEmail}</span>
+                      <span className="text-gray-500">{order.customerEmail}</span>
                    </div>
                 </div>
                 <hr className="my-3 h-[1.25px] w-full bg-gray-300"/>
+
+                {address && (
+                    <>
+                       <span className="text-lg font-semibold">Delivery address</span>
+                       <address className="flex flex-col mt-2 gap-0.5 not-italic text-gray-500">
+                          <span>{address.name}</span>
+                          <span>{address.line1}</span>
+                          {address.line2 && <span>{address.line2}</span>}
+                          <span>{address.city}{address.state ? `, ${address.state}` : ""}</span>
+                          <span>{address.postalCode}</span>
+                          <span>{address.country}</span>
+                       </address>
+                       <hr className="my-3 h-[1.25px] w-full bg-gray-300"/>
+                    </>
+                )}
 
                 {/* Summary Section */}
                 <span className="text-lg font-semibold">Summary</span>
                 <div className="flex flex-col justify-between mt-2 gap-0.5">
                    <div className="flex justify-between">
                       <span className="text-gray-500">Subtotal</span>
-                      <span className="text-gray-500">{getSymbolFromCurrency(data.order.currency.toUpperCase())}{data.order.amountSubtotal}</span>
+                      <span className="text-gray-500">{formatPrice(order.subtotal, order.currency)}</span>
                    </div>
                    <div className="flex justify-between">
                       <span className="text-gray-500">Delivery</span>
-                      <span className="text-gray-500">{getSymbolFromCurrency(data.order.currency.toUpperCase())}{data.order.shipping}</span>
+                      <span className="text-gray-500">{formatPrice(order.shipping, order.currency)}</span>
                    </div>
                    <div className="flex justify-between mt-1">
                       <span className="text-lg font-medium">Total</span>
-                      <span className="text-lg font-medium">{getSymbolFromCurrency(data.order.currency.toUpperCase())}{data.order.amountTotal}</span>
+                      <span className="text-lg font-medium">{formatPrice(order.total, order.currency)}</span>
                    </div>
                 </div>
              </div>

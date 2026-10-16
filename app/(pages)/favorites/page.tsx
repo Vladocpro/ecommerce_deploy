@@ -1,5 +1,4 @@
 import React from 'react';
-import getCurrentUser from "../../actions/getCurrentUser";
 import ClientFavorites from "../../components/pages/ClientFavorites";
 import {getUserFavorites} from "../../actions/getFavorites";
 import {redirect} from "next/navigation";
@@ -12,7 +11,6 @@ const HOME = async () => {
    }
 
 return (
-    // @ts-ignore
     <ClientFavorites favorites={response.favorites}/>
    )
 };

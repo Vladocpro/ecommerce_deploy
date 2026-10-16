@@ -1,5 +1,8 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
+//
+// Money is stored as integers in minor units (pence) everywhere.
+// After changing this file run `npx prisma db push` to create the indexes.
 
 generator client {
   provider = "prisma-client-js"
@@ -10,20 +13,82 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Role {
+  Customer
+  Admin
+}
+
+enum Gender {
+  Men
+  Women
+}
+
+// Display labels live in app/constants.ts (TShirt -> "T-Shirt")
+enum Category {
+  Shoes
+  Trousers
+  TShirt
+  Jacket
+}
+
+enum OrderStatus {
+  Paid
+  Shipped
+  Delivered
+  Cancelled
+  Refunded
+}
+
+// Composite types are embedded documents with a fixed, validated shape
+
+type ProductImage {
+  url      String
+  // Cloudinary public id, used to delete the file
+  publicId String
+}
+
+type CartItem {
+  variantId String @db.ObjectId
+  quantity  Int
+}
+
+// A snapshot of what was bought: it must not change when the product is edited later
+type OrderItem {
+  productId String @db.ObjectId
+  variantId String @db.ObjectId
+  title     String
+  size      String
+  category  Category
+  gender    Gender
+  image     String
+  unitPrice Int
+  quantity  Int
+}
+
+type Address {
+  name       String
+  line1      String
+  line2      String?
+  city       String
+  state      String?
+  postalCode String
+  country    String
+}
+
 model User {
-  id            String    @id @default(auto()) @map("_id") @db.ObjectId
+  id            String     @id @default(auto()) @map("_id") @db.ObjectId
   name          String?
-  email         String?   @unique
+  email         String?    @unique
   emailVerified DateTime?
   image         String?
   password      String?
-  role          String    @default("Customer")
-  orders        Json[]    @default([])
-  favorites     Json[]    @default([])
-  cart          Json[]    @default([])
+  role          Role       @default(Customer)
+  cart          CartItem[]
   accounts      Account[]
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  favorites     Favorite[]
+  orders        Order[]
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
 }
 
 model Account {
@@ -46,29 +111,87 @@ model Account {
 }
 
 model Product {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
-  title       String
-  description String
-  price       Float
-  sizes       Json[]   @default([])
-  images      String[] @default([])
-  gender      String
-  sale        Float
-  category    String
+  id              String           @id @default(auto()) @map("_id") @db.ObjectId
+  title           String
+  // URL-friendly id built from title, gender and category
+  slug            String           @unique
+  description     String
+  price           Int
+  discountPercent Int              @default(0)
+  // price after discount, stored so the database can filter and sort by it
+  finalPrice      Int
+  images          ProductImage[]
+  gender          Gender
+  category        Category
+  // Archived products are hidden from the store but keep past orders and links intact
+  archived        Boolean          @default(false)
+  variants        ProductVariant[]
+  favorites       Favorite[]
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+
+  // The same line name exists across categories (e.g. "Nike Air" jacket and trousers)
+  @@unique([title, gender, category])
+  @@index([archived, category, gender])
+  @@index([archived, finalPrice])
+}
+
+// One sellable size of a product, with its own stock (a SKU)
+model ProductVariant {
+  id        String  @id @default(auto()) @map("_id") @db.ObjectId
+  productId String  @db.ObjectId
+  size      String
+  stock     Int
+  // Display order of sizes (XS before S, UK 6 before UK 6.5, ...)
+  sortOrder Int
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([productId, size])
+  @@index([size, stock])
+}
+
+model Favorite {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String   @db.ObjectId
+  productId String   @db.ObjectId
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  // The database itself prevents favoriting the same product twice
+  @@unique([userId, productId])
 }
 
 model Order {
-  id             String @id @default(auto()) @map("_id") @db.ObjectId
-  trackingNumber String @unique @default(uuid())
-  userId         String @db.ObjectId
-  paymentIntent  String @unique
-  sessionId      String @unique
-  currency       String
-  items          Json[]
-  amountSubtotal Float
-  shipping       Int
-  amountTotal    Float
-  date           String
-  customerName   String @default("")
-  customerEmail  String @default("")
+  id                    String      @id @default(auto()) @map("_id") @db.ObjectId
+  // Human-friendly reference shown to customers, e.g. ECM-7K2Q9XAB
+  orderNumber           String      @unique
+  userId                String      @db.ObjectId
+  user                  User        @relation(fields: [userId], references: [id])
+  status                OrderStatus @default(Paid)
+  stripeSessionId       String      @unique
+  stripePaymentIntentId String      @unique
+  // ISO currency code as returned by Stripe, e.g. "gbp"
+  currency              String
+  items                 OrderItem[]
+  subtotal              Int
+  shipping              Int
+  total                 Int
+  shippingAddress       Address?
+  customerName          String      @default("")
+  customerEmail         String      @default("")
+  createdAt             DateTime    @default(now())
+  updatedAt             DateTime    @updatedAt
+
+  @@index([userId, createdAt])
+}
+
+// Fixed-window counters for throttling sign-in and sign-up attempts.
+// Expired documents are removed by a TTL index on expiresAt, which lib/rateLimit.ts creates at
+// runtime (Prisma can't declare TTL indexes, and db push drops indexes it doesn't know).
+model RateLimit {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  key       String   @unique
+  count     Int
+  expiresAt DateTime
 }

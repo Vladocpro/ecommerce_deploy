@@ -1,21 +1,26 @@
 "use client"
 
-import {useEffect} from 'react';
+import {RefObject, useEffect, useRef} from 'react';
 
-const useClickOutside = (ref :any, onClickOutside: () => void) => {
+const useClickOutside = (ref: RefObject<HTMLElement | null>, onClickOutside: () => void) => {
+   // Callers pass an inline arrow; reading it through a ref avoids re-subscribing on every render
+   const callbackRef = useRef(onClickOutside)
    useEffect(() => {
-      function handleClickOutside(event: any) {
-         if (ref.current && !ref.current.contains(event.target)) {
-            onClickOutside();
+      callbackRef.current = onClickOutside
+   })
+
+   useEffect(() => {
+      function handleClickOutside(event: MouseEvent) {
+         if (ref.current && event.target instanceof Node && !ref.current.contains(event.target)) {
+            callbackRef.current();
          }
       }
 
       document.addEventListener("mousedown", handleClickOutside);
       return () => {
-         // dispose
          document.removeEventListener("mousedown", handleClickOutside);
       };
-   }, [ref, onClickOutside]);
+   }, [ref]);
 };
 
 export default useClickOutside;

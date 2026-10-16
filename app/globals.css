@@ -75,16 +75,6 @@ input:checked + div {
 input:checked + div svg {
   @apply block;
 }
-.aside-filters::-webkit-scrollbar {
-  @apply w-[7px]
-}
-
-.aside-filters::-webkit-scrollbar-thumb {
-  background-color: #7F7F7F;
-  border-radius: 25px;
-  /*border: 3px solid transparent;*/
-  background-clip: content-box;
-}
 .cls-1,.cls-2{
   fill:none;
   stroke:#020202;
@@ -99,10 +89,6 @@ input:checked + div svg {
   stroke-linejoin: round;
   stroke: black;
 }
-.sliderSvg {
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
 
 .react-multi-carousel-dot button {
   border: transparent !important;
@@ -113,17 +99,9 @@ input:checked + div svg {
   opacity: 100% !important;
   background-color: rgb(75 85 99 / 100%) !important;
 }
-/*.hide {*/
-/*  transition: opacity 300ms, visibility 300ms, display 200ms;*/
-/*  display: none;*/
-/*  opacity: 0;*/
-/*}*/
-
-
 
 ::-webkit-scrollbar {
   background-color: white;
-  /*width: 12px;*/
   @apply w-[7px] sm:w-2 lg:w-2.5
 }
 ::-webkit-scrollbar-track {
@@ -132,6 +110,5 @@ input:checked + div svg {
 ::-webkit-scrollbar-thumb {
   background-color: #b9bec2;
   border-radius: 25px;
-  /*border: 3px solid transparent;*/
   background-clip: content-box;
 }

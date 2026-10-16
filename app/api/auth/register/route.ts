@@ -1,23 +1,39 @@
 import bcrypt from "bcrypt";
-import client  from "../../../../lib/prismadb";
+import {Prisma} from "@prisma/client";
+import client from "../../../../lib/prismadb";
 import {NextResponse} from "next/server";
-import {createJWT} from "../../../../lib/auth";
-export async function POST(req : any) {
+import {getClientIp, rateLimit} from "../../../../lib/rateLimit";
+
+// Same rules as the sign-up form; the form can be bypassed, so the server checks again
+const EMAIL_REGEX = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i
+
+export async function POST(req: Request) {
+   if (!await rateLimit(`sign-up:${getClientIp(req.headers)}`, 5, 60 * 60)) {
+      return NextResponse.json({error: "Too many sign-ups, try again later"}, {status: 429})
+   }
    try {
-      const body = await req.json();
-      const passwordHash = await bcrypt.hash(body.password, 10);
-      const user = await client.user.create({
+      const {email, password} = await req.json();
+      if (typeof email !== "string" || !EMAIL_REGEX.test(email)) {
+         return NextResponse.json({error: "Specify valid Email"}, {status: 400})
+      }
+      if (typeof password !== "string" || password.length < 5 || password.length > 20) {
+         return NextResponse.json({error: "Password must be 5-20 characters"}, {status: 400})
+      }
+
+      const passwordHash = await bcrypt.hash(password, 10);
+      await client.user.create({
          data: {
-            email: body.email,
+            email,
             password: passwordHash
          }
       })
-      // @ts-ignore
-      const token : string | undefined = await createJWT(user)
-      const {password, ...userData} = user
-      return NextResponse.json({message: "User has been created", token: token, user: userData})
-   } catch (error : any) {
-      console.log(error)
-      if(error.meta.target === "email_1") return NextResponse.json({error: "The email is already taken"})
+      // The session is created by NextAuth's signIn() right after this call
+      return NextResponse.json({message: "User has been created"})
+   } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2002") {
+         return NextResponse.json({error: "The email is already taken"}, {status: 409})
+      }
+      console.error(error)
+      return NextResponse.json({error: "Couldn't create your account"}, {status: 500})
    }
 }

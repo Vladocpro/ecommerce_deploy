@@ -1,19 +1,26 @@
 import React from 'react';
+import type { Metadata } from "next";
 import { getProducts } from "../../actions/getProducts";
 import DropDownOptions from "../../components/dropdown/DropDownOptions";
 import ProductLayout from "../../components/store/ProductLayout";
+import Pagination from "../../components/store/Pagination";
 import Filters from "../../components/store/Filters";
 import FiltersPopup from "../../components/modals/filtersPopup/FiltersPopup";
-import { IFiltersState } from '../../types';
-import {fillFilterObject} from "../../constants";
+import {CATEGORY_OPTIONS, fillFilterObject, GENDER_OPTIONS, PRICE_RANGES, SALE_OPTIONS, SIZE_OPTIONS} from "../../constants";
+
+export const metadata: Metadata = {
+   title: "Store",
+   description: "Shop Nike shoes, T-shirts, trousers and jackets for men and women. Filter by size, price and category.",
+}
 
 type Props = {
-   searchParams: IFiltersState
+   searchParams: Promise<Record<string, string | string[] | undefined>>
 }
 
 const Store = async ({searchParams}: Props) => {
 
-   const products = await getProducts(fillFilterObject(searchParams))
+   const query = await searchParams
+   const {products, page, pageCount} = await getProducts(fillFilterObject(query))
 
    return (
        <>
@@ -23,23 +30,23 @@ const Store = async ({searchParams}: Props) => {
                 <aside className="hidden lg:inline-block ml-1 min-w-[200px] w-[200px] pb-2">
                    <DropDownOptions isExpanded={true} titleStyles="relative text-lg w-[200px] font-medium"
                                     title="On Sale" category="sale"  showUnderline={true}
-                                    options={["Sale"]}/>
+                                    options={SALE_OPTIONS}/>
                    <DropDownOptions isExpanded={true} titleStyles="relative text-lg w-[200px] font-medium"
                                     title="Price" category="price"  showUnderline={true}
-                                    options={["Under £50", "£50 - £100", "£100 - £200"]}/>
+                                    options={PRICE_RANGES}/>
                    <DropDownOptions isExpanded={true} titleStyles="relative text-lg w-[200px] font-medium"
                                     title="Category" category="category"  showUnderline={true}
-                                    options={["Shoes", "Trousers", "T-Shirt", "Jacket"]}/>
+                                    options={CATEGORY_OPTIONS}/>
                    <DropDownOptions isExpanded={true} titleStyles="relative text-lg w-[200px] font-medium"
                                     title="Gender" category="gender"  showUnderline={true}
-                                    options={["Men", "Women"]}/>
+                                    options={GENDER_OPTIONS}/>
                    <DropDownOptions isExpanded={true} titleStyles="relative text-lg w-[200px] font-medium"
                                     title="Sizes" category="sizes" showUnderline={false}
-                                    options={["XS", "S", "M", "L", "XL", "2XL", "3XL", "UK 5.5", "UK 6", "UK 6.5", "UK 7", "UK 7.5", "UK 8", "UK 8.5", "UK 9", "UK 9.5", "UK 10", "UK 10.5", "UK 11", "UK 11.5", "UK 12", "UK 12.5"]}/>
+                                    options={SIZE_OPTIONS}/>
                 </aside>
              <div className={'w-full'}>
-                {/*@ts-ignore*/}
                 <ProductLayout products={products}/>
+                <Pagination page={page} pageCount={pageCount} searchParams={query}/>
              </div>
           </div>
        </div>

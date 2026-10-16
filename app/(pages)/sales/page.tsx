@@ -1,12 +1,14 @@
 
 import React from 'react';
-import Image from "next/image";
-import Link from "next/link";
-import PriceComponent from "../../components/PriceComponent";
-import Loader from "../../components/Loader";
+import type { Metadata } from "next";
+import ProductCard from "../../components/store/ProductCard";
 import {getSalesProducts} from "../../actions/getProducts";
-import {Product} from "@prisma/client";
+import {Product} from "../../types";
 
+export const metadata: Metadata = {
+   title: "Sale",
+   description: "Discounted Nike trainers, sportswear and running gear: up to 15% off the latest styles.",
+}
 
 function getSeason() {
    const date = new Date();
@@ -25,14 +27,7 @@ function getSeason() {
 
 const Home = async () => {
 
-  const products = await getSalesProducts()
-
-   if(products === undefined) {
-      return (
-          <Loader/>
-      )
-   }
-
+   const products = await getSalesProducts()
 
    return (
        <div className=" mt-3 ">
@@ -45,35 +40,12 @@ const Home = async () => {
           </div>
 
           <div className="Container">
-             {products && (
-                 <div className="grid grid-cols-2 lg:grid-cols-3 w-full gap-y-6 gap-5 text-black mb-10">
-                    {products?.map((product: Product) => (
-                        <div key={product.id} className="">
-                           <Link href={`/store/product/${product.id}`} className="w-full ">
-                              <Image
-                                  className="w-full  object-cover pointer-events-none select-none"
-                                  // fill
-                                  priority={true}
-                                  height={620}
-                                  width={600}
-                                  // @ts-ignore
-                                  src={product.images[0]}
-                                  alt="Image"
-                              />
-                              <div className="flex flex-col text-lg font-medium cursor-pointer" >
-                                 <span>{product.title}</span>
-                                 <span className="text-gray-500 font-normal leading-4">{product.category}</span>
-                                 <span className="mt-2">
-                                   {/* @ts-ignore */}
-                                 <PriceComponent product={product} showPercent={true} mobileHidePercent={true} />
-                                 </span>
-                              </div>
-                           </Link>
-                        </div>
-
-                    ))}
-                 </div>
-             )}
+             <div className="grid grid-cols-2 lg:grid-cols-3 w-full gap-y-6 gap-5 text-black mb-10">
+                {products.map((product: Product, index: number) => (
+                    // Only the first row is preloaded
+                    <ProductCard key={product.id} product={product} priority={index < 3}/>
+                ))}
+             </div>
           </div>
 
        </div>

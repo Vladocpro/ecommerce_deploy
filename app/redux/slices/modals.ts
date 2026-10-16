@@ -2,19 +2,6 @@ import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {Product} from "../../types";
 
 
-interface toastPopup {
-      visible:  boolean,
-      message: string,
-      duration?: number,
-      position: ToastPositions,
-      type: ToastType,
-
-}
-interface selectSizePopup {
-   isOpen:  boolean,
-   product: Product | null
-}
-
 export enum ToastPositions  {
    AUTH = 'inline-block self-center top-5 left-1/2 translate-x-[-50%]',
    RIGHT=  ""
@@ -25,6 +12,22 @@ export enum ToastType  {
    BLACK   = "bg-black",
 }
 
+export interface ToastPayload {
+   visible:  boolean,
+   message: string,
+   duration?: number,
+   position: ToastPositions,
+   type: ToastType,
+}
+interface toastPopup extends ToastPayload {
+   // Bumped on every setToastPopup so the toast restarts its timer even when one is already visible
+   id: number,
+}
+interface selectSizePopup {
+   isOpen:  boolean,
+   product: Product | null
+}
+
 interface modalState {
    authPopup: boolean,
    filtersPopup: boolean,
@@ -32,13 +35,16 @@ interface modalState {
    selectSizePopup: selectSizePopup
 }
 
+const DEFAULT_TOAST_DURATION = 3000
+
 const initialState : modalState = {
    authPopup: false,
    filtersPopup: false,
    toastPopup: {
+      id: 0,
       visible:  false ,
       message: "",
-      duration: 3000,
+      duration: DEFAULT_TOAST_DURATION,
       position: ToastPositions.AUTH,
       type: ToastType.SUCCESS,
    },
@@ -60,11 +66,12 @@ const modalsSlice = createSlice({
          state.selectSizePopup.isOpen = action.payload.isOpen;
          state.selectSizePopup.product = action.payload.product;
       },
-      setToastPopup: (state, action: PayloadAction<toastPopup>) => {
+      setToastPopup: (state, action: PayloadAction<ToastPayload>) => {
+         state.toastPopup.id += 1;
          state.toastPopup.message = action.payload.message;
          state.toastPopup.position = action.payload.position;
          state.toastPopup.type = action.payload.type;
-         if(action.payload.duration) state.toastPopup.duration = action.payload.duration;
+         state.toastPopup.duration = action.payload.duration ?? DEFAULT_TOAST_DURATION;
          state.toastPopup.visible = action.payload.visible;
       },
       setFiltersPopup: (state, action: PayloadAction<boolean>) => {
@@ -72,8 +79,6 @@ const modalsSlice = createSlice({
       },
       closeToastPopup: (state) => {
          state.toastPopup.visible = false;
-         // state.toastPopup.message = "";
-         state.toastPopup.duration = 3000;
       },
       closeSelectSizePopup: (state) => {
          state.selectSizePopup.isOpen = false;
