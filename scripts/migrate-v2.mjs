@@ -57,7 +57,9 @@ function convertProduct(doc, problems) {
    if (!GENDERS.includes(doc.gender)) problems.push(`${where}: unknown gender ${doc.gender}`);
    if (!(typeof doc.price === "number" && doc.price > 0)) problems.push(`${where}: invalid price ${doc.price}`);
 
-   const images = (doc.images ?? []).map((url) => {
+   const images = (doc.images ?? []).map((originalUrl) => {
+      // Older uploads stored Cloudinary's http `url`; next.config.js only allows https images
+      const url = originalUrl.replace(/^http:\/\/res\.cloudinary\.com\//, "https://res.cloudinary.com/");
       const publicId = publicIdFromUrl(url);
       if (!publicId) problems.push(`${where}: can't read the Cloudinary id from ${url}`);
       return {url, publicId: publicId ?? url};
