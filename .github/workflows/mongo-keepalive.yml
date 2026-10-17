@@ -1,0 +1,34 @@
+name: Mongo keep-alive
+
+on:
+  schedule:
+    - cron: "0 6 * * 1" # every Monday 06:00 UTC
+  workflow_dispatch:
+
+permissions:
+  actions: write
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm i mongodb
+      - run: |
+          node -e "
+          const { MongoClient } = require('mongodb');
+          (async () => {
+            const c = new MongoClient(process.env.MONGO_URI);
+            await c.connect();
+            console.log(await c.db('admin').command({ ping: 1 }));
+            await c.close();
+          })().catch(e => { console.error(e); process.exit(1); });"
+        env:
+          MONGO_URI: ${{ secrets.MONGO_URI }}
+      # GitHub disables scheduled workflows after 60 days without repo activity;
+      # re-enabling resets that timer so the ping keeps running.
+      - run: gh api -X PUT "repos/${{ github.repository }}/actions/workflows/mongo-keepalive.yml/enable"
+        env:
+          GH_TOKEN: ${{ github.token }}

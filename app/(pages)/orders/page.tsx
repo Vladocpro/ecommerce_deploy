@@ -12,8 +12,7 @@ const HOME = async () => {
    }
 
    return (
-       // @ts-ignore
-       <ClientOrders currentUser={response?.user} userOrders={response?.orders}/>
+       <ClientOrders userOrders={response.orders}/>
    )
 };
 

@@ -1,129 +1,77 @@
 import prisma from "../../lib/prismadb";
-import {Product} from "@prisma/client";
-import { IFiltersState } from "../types";
+import {Prisma} from "@prisma/client";
+import {IFiltersState, Product} from "../types";
+import {isObjectId} from "../../lib/cart";
+import {PRICE_RANGES, PRODUCTS_PER_PAGE} from "../constants";
 
+// Sizes are always returned in display order
+const withVariants = {variants: {orderBy: {sortOrder: "asc"}}} satisfies Prisma.ProductInclude
 
-export async function getProducts(reqFilters: IFiltersState) {
-   try {
+export type ProductPage = {products: Product[], total: number, page: number, pageCount: number}
 
-      if(Object.keys(reqFilters).length === 0) {
-         const response = await prisma.product.findMany();
-         return response;
-      }
+// Filtering, sorting and pagination all happen in the database
+export async function getProducts(filters: IFiltersState): Promise<ProductPage> {
+   const conditions: Prisma.ProductWhereInput[] = [{archived: false}];
 
-      const filters = [];
-
-      if (reqFilters.sale) {
-         filters.push({
-            sale: {
-               gt: 0,
-            },
-         });
-      }
-
-      if (reqFilters.category && reqFilters.category.length > 0) {
-         filters.push({
-            category: {
-               in: reqFilters.category,
-            },
-         });
-      }
-
-      if (reqFilters.gender && reqFilters.gender.length > 0) {
-         filters.push({
-            gender: {
-               in: reqFilters.gender,
-            },
-         });
-      }
-
-      if (reqFilters.search !== null && reqFilters.search.length > 0) {
-         filters.push({
-            title: {
-               contains: reqFilters.search,
-               mode: "insensitive",
-            },
-         },)
-      }
-
-      const response = await prisma.product.findMany({
-         where: {
-            // @ts-ignore
-            AND: filters,
-         }
-      });
-
-      let filteredProducts = response.map((product : Product) => {
-         if(product.sale > 0) {
-            const newPrice: number = Number((product.price - ((product.price * product.sale) / 100)).toFixed(2))
-            return {...product, saledPrice: newPrice}
-
-         } else {
-            return {...product, saledPrice: product.price}
-         }
-      });
-
-      if (reqFilters.price && reqFilters.price.length > 0) {
-         filteredProducts = filteredProducts.filter(product => {
-            for (let i = 0; i < reqFilters.price.length; i++) {
-               const [minPrice, maxPrice] = reqFilters.price[i]
-                   .split(' - ')
-                   .map((price) => parseInt(price.replace('£', ''), 10));
-
-               if (product.saledPrice >= minPrice && product.saledPrice <= maxPrice) {
-                  return true;
-               }
-            }
-
-            return false;
-         })
-      }
-
-      if (reqFilters.sizes && reqFilters.sizes.length > 0) {
-          // @ts-ignore
-         filteredProducts = response.filter(product =>
-             // @ts-ignore
-             product.sizes.some((size : ISize) =>  reqFilters.sizes.find((sizeTitle) => sizeTitle === size.title) && size.quantity > 0)
-         )
-      }
-
-      if (reqFilters.sortBy) {
-            if(reqFilters.sortBy === "Price: Low-High")
-               filteredProducts = filteredProducts.sort((a, b) => a.saledPrice - b.saledPrice);
-            if(reqFilters.sortBy === "Price: High-Low")
-               filteredProducts = filteredProducts.sort((a, b) => b.saledPrice - a.saledPrice);
-      }
-      return filteredProducts
-   } catch (error: any) {
-      throw new Error(error);
+   if (filters.sale) {
+      conditions.push({discountPercent: {gt: 0}});
    }
+   if (filters.category.length > 0) {
+      conditions.push({category: {in: filters.category}});
+   }
+   if (filters.gender.length > 0) {
+      conditions.push({gender: {in: filters.gender}});
+   }
+   if (filters.search) {
+      conditions.push({title: {contains: filters.search, mode: "insensitive"}});
+   }
+   const priceRanges = PRICE_RANGES.filter((range) => filters.price.includes(range.value));
+   if (priceRanges.length > 0) {
+      conditions.push({OR: priceRanges.map((range) => ({finalPrice: {gte: range.min, lt: range.max}}))});
+   }
+   if (filters.sizes.length > 0) {
+      // Only sizes that are actually in stock
+      conditions.push({variants: {some: {size: {in: filters.sizes}, stock: {gt: 0}}}});
+   }
+
+   // id as a tie-breaker keeps pages stable when several products share a price
+   const orderBy: Prisma.ProductOrderByWithRelationInput[] =
+       filters.sortBy === "Price: Low-High" ? [{finalPrice: "asc"}, {id: "asc"}]
+       : filters.sortBy === "Price: High-Low" ? [{finalPrice: "desc"}, {id: "asc"}]
+       : [{createdAt: "desc"}, {id: "asc"}];
+
+   const where: Prisma.ProductWhereInput = {AND: conditions};
+   const [products, total] = await Promise.all([
+      prisma.product.findMany({
+         where,
+         orderBy,
+         skip: (filters.page - 1) * PRODUCTS_PER_PAGE,
+         take: PRODUCTS_PER_PAGE,
+         include: withVariants,
+      }),
+      prisma.product.count({where}),
+   ]);
+
+   return {products, total, page: filters.page, pageCount: Math.max(1, Math.ceil(total / PRODUCTS_PER_PAGE))};
 }
 
-
-export  async function getProductById(productId: string) {
-   try {
-      const product : Product | null = await prisma.product.findUnique({
-         where: {
-            id: productId
-         }
-      });
-      return product!
-   } catch (error: any) {
-      throw new Error(error);
-   }
+// Archived products are not shown to customers
+export async function getProductBySlug(slug: string): Promise<Product | null> {
+   const product = await prisma.product.findUnique({where: {slug}, include: withVariants});
+   return product && !product.archived ? product : null;
 }
 
-export  async function getSalesProducts() {
-   try {
-      const products : Product[] | null = await prisma.product.findMany({
-         where: {
-            sale:  {
-               gt: 0
-            }
-         }
-      });
-      return products!
-   } catch (error: any) {
-      throw new Error(error);
-   }
+// Supports old /store/product/<ObjectId> links so they can be redirected to the slug URL
+export async function getProductSlugById(id: string): Promise<string | null> {
+   if (!isObjectId(id)) return null;
+   const product = await prisma.product.findUnique({where: {id}, select: {slug: true, archived: true}});
+   return product && !product.archived ? product.slug : null;
+}
+
+export async function getSalesProducts(): Promise<Product[]> {
+   return prisma.product.findMany({
+      where: {archived: false, discountPercent: {gt: 0}},
+      orderBy: {createdAt: "desc"},
+      include: withVariants,
+   });
 }

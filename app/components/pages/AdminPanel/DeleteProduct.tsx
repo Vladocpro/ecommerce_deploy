@@ -1,39 +1,45 @@
 "use client"
 
 import React, {useState} from 'react';
-import ProductSearch from "../../../components/ProductSearch";
-import {Product} from "@prisma/client";
+import ProductSearch from "../../ProductSearch";
 import axios from "axios";
-import {setToastPopup, ToastPositions, ToastType} from "../../../redux/slices/modals";
-import {useDispatch} from "react-redux";
 import {useRouter} from "next/navigation";
+import useNotify from "../../useNotify";
+import {Product} from "../../../types";
 
 const DeleteProduct = () => {
 
    const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
    const [isDeleting, setIsDeleting] = useState<boolean>(false)
-   const dispatch = useDispatch()
+   const notify = useNotify()
    const router = useRouter();
 
+   // Archives the product: it disappears from the store, but past orders keep their details
+   // and it can be restored from "Update Product"
    const handleDeleteProduct = async () => {
       if(selectedProduct === null) return
       setIsDeleting(true)
-      axios.delete("/api/product",{data: {id: selectedProduct.id, images: selectedProduct.images, category: selectedProduct.category, name: selectedProduct.title}}).then((response) => {
-         dispatch(setToastPopup({visible: true, message: response.data.message, position: ToastPositions.AUTH, type: ToastType.SUCCESS, duration: 5000}))
-      }).catch((error) => {
-         dispatch(setToastPopup({visible: true, message: error?.response?.data, position: ToastPositions.AUTH, type: ToastType.ERROR, duration: 5000}))
-      }).finally(() => {
+      try {
+         const response = await axios.delete("/api/product", {data: {id: selectedProduct.id}})
+         notify.success(response.data.message)
+         setSelectedProduct(null)
+         router.refresh()
+      } catch (error) {
+         notify.requestError(error, "Couldn't remove the product")
+      } finally {
          setIsDeleting(false)
-         router.refresh();
-      })
+      }
    }
 
    return (
        <div className="flex flex-col mt-6">
           <ProductSearch selectedProduct={selectedProduct} setSelectedProduct={setSelectedProduct}/>
+          <p className="text-gray-500 mt-6">Removed products are hidden from the store. Past orders keep them, and you can restore one from &quot;Update Product&quot;.</p>
           <button
-              className="py-3 w-full mx-auto rounded-lg bg-black text-white font-bold mb-10 mt-10" onClick={handleDeleteProduct}>{isDeleting ? "Removing..." : "Remove Product"}</button>
-
+              type="button" disabled={selectedProduct === null || selectedProduct.archived || isDeleting}
+              className="py-3 w-full mx-auto rounded-lg bg-black text-white font-bold mb-10 mt-6 disabled:opacity-60" onClick={handleDeleteProduct}>
+             {isDeleting ? "Removing..." : selectedProduct?.archived ? "Already removed" : "Remove Product"}
+          </button>
        </div>
    );
 };

@@ -9,15 +9,6 @@ const Home =  () => {
 
    const [operation, setOperation] = useState<"create" | "update" | "delete">("create")
 
-   const Tabs = () => {
-      switch (operation) {
-         case "create": return (<AddProduct/>)
-         case "update": return (<UpdateProduct/>)
-         case "delete": return (<DeleteProduct/>)
-         default: return (<></>)
-      }
-   }
-
    return (
        <div className="mt-4 max-w-[1000px] mx-auto">
           <div className="flex gap-3">
@@ -34,7 +25,10 @@ const Home =  () => {
                 Remove Product
              </button>
           </div>
-          <Tabs/>
+          {/* Rendered inline: a component defined inside this one would be recreated (and lose its form state) on every render */}
+          {operation === "create" && <AddProduct/>}
+          {operation === "update" && <UpdateProduct/>}
+          {operation === "delete" && <DeleteProduct/>}
 
 
 

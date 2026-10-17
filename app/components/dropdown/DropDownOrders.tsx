@@ -1,18 +1,17 @@
 "use client"
 
-import React, {FC, useMemo, useRef, useState} from 'react';
+import React, {FC, useRef, useState} from 'react';
 import useClickOutside from "../useClickOutside";
 
 interface DropDownSelectProps {
    containerStyles? :string,
    handleChange: (sortBy: string) => void,
    itemStyles? :string,
-   constTitle?: string,
    svgStyles?: string,
    svgBox?: string,
    value:string,
    isExpanded: boolean,
-   options: any[]
+   options: string[]
 }
 
 
@@ -27,22 +26,22 @@ const DropDownOrders: FC<DropDownSelectProps> = ({ svgStyles,value,  svgBox,hand
    return (
        <div className="relative hidden sm:block" ref={dropdownRef}>
 
-          <div className="flex gap-3 items-center pl-1 cursor-pointer select-none " onClick={() => setIsOpen(!isOpen)}>
+          <button type="button" aria-expanded={isOpen} className="flex gap-3 items-center pl-1 cursor-pointer select-none " onClick={() => setIsOpen(!isOpen)}>
              <div className="text-lg font-medium">{value}</div>
-             <div className={`relative w-8 h-8 ${svgBox}`}>
-                <hr className={`absolute h-[2.5px] w-4 rounded-xl bottom-[13px] left-0.5    ${!isOpen ? "rotate-45" :  "-rotate-45"} ${svgStyles} transition-all duration-300 bg-black`}/>
-                <hr className={`absolute h-[2.5px] w-4 rounded-xl bottom-[13px] right-1   ${!isOpen ? "-rotate-45" : "rotate-45"}    ${svgStyles}    transition-all duration-300 bg-black`}/>
+             <div className={`relative w-8 h-8 ${svgBox ?? ""}`} aria-hidden="true">
+                <hr className={`absolute h-[2.5px] w-4 rounded-xl bottom-[13px] left-0.5    ${!isOpen ? "rotate-45" :  "-rotate-45"} ${svgStyles ?? ""} transition-all duration-300 bg-black`}/>
+                <hr className={`absolute h-[2.5px] w-4 rounded-xl bottom-[13px] right-1   ${!isOpen ? "-rotate-45" : "rotate-45"}    ${svgStyles ?? ""}    transition-all duration-300 bg-black`}/>
              </div>
-          </div>
+          </button>
 
-          <div className={`${isOpen ? "translate-y-2  opacity-100 visible pointer-events-auto" : "-translate-y-5 opacity-0 invisible pointer-events-none"} ${containerStyles} transition-all duration-300  rounded-lg select-none  absolute right-1`}>
-             {options.map((item, index) => (
-                 <div key={index} onClick={() => {
-                    setIsOpen(!isOpen)
+          <div className={`${isOpen ? "translate-y-2  opacity-100 visible pointer-events-auto" : "-translate-y-5 opacity-0 invisible pointer-events-none"} ${containerStyles ?? ""} transition-all duration-300  rounded-lg select-none  absolute right-1`}>
+             {options.map((item) => (
+                 <button type="button" key={item} onClick={() => {
+                    setIsOpen(false)
                     handleChange(item)
-                 }} className={` cursor-pointer hover:text-gray-400 ${itemStyles} rounded-md`}>
+                 }} className={`text-left cursor-pointer hover:text-gray-400 ${itemStyles ?? ""} rounded-md`}>
                     {item}
-                 </div>
+                 </button>
              ))}
           </div>
        </div>

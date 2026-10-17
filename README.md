@@ -47,27 +47,33 @@ To run the project locally, follow these steps:
 3. **Install dependencies::**
    ```bash
    npm install
+   ```
 
 4. **Set up environment variables:** You need to create .env file in the project root directory. Below are the necessary environment variables:
     ```bash
     DATABASE_URL="The connection URL for your MongoDB database. It specifies the location and authentication details for the database server."
-    NEXTAUTH_SECRET="A secret key used by NextAuth for signing and encrypting tokens. It enhances the security of user authentication."
-    JWT_SECRET_KEY="A secret key used for authentication and encrypting tokens."
+    NEXTAUTH_SECRET="A secret key used by NextAuth for signing and encrypting the session cookie."
+    NEXTAUTH_URL="The base URL of your Next.js application (e.g. http://localhost:3000 for local development). Used for auth callbacks and Stripe redirect URLs."
     GOOGLE_CLIENT_ID="The client ID for authenticating with Google."
     GOOGLE_CLIENT_SECRET="The client secret associated with the Google client ID."
-    NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME="The Cloudinary cloud name, used for media asset management and delivery."
-    NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET="The Cloudinary cloud name, used for uploading media assets."
-    NEXT_PUBLIC_CLOUDINARY_API_KEY="The secret API key for interacting with the Cloudinary."
-    NEXT_PUBLIC_CLOUDINARY_API_SECRET="The secret key for interactions with Cloudinary."
-    STRIPE_API_KEY="The secret API key for interacting with the Stripe payment platform."
-    STRIPE_WEBHOOK_SECRET="The secret key for verifying Stripe webhook events."
-    NEXT_AUTH_URL="The base URL of your Next.js application. It is used by NextAuth to construct callback URLs and other authentication-related URLs. Adjust it based on your environment (e.g., http://localhost:3000 for local development)."
+    NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME="The Cloudinary cloud name. Public: it is part of every image URL."
+    CLOUDINARY_API_KEY="The Cloudinary API key, used server-side to sign uploads."
+    CLOUDINARY_API_SECRET="The Cloudinary API secret. Server-only: never give it a NEXT_PUBLIC_ prefix."
+    STRIPE_SECRET_KEY="The secret API key for interacting with the Stripe payment platform."
+    STRIPE_WEBHOOK_KEY="The signing secret for verifying Stripe webhook events (whsec_...)."
+    STRIPE_SHIPPING_RATE="The id of the Stripe shipping rate offered at checkout (shr_...)."
     ```
    Make sure to add the `.env` file to the `.gitignore` list to avoid exposing your secret keys.
+
+   After changing `prisma/schema.prisma`, run `npx prisma db push` to create the indexes in MongoDB.
+
+   **Upgrading a database created with the original schema:** run `npm run db:migrate-v2` (a dry run that only reports what would change), then `npm run db:migrate-v2 -- --apply`. It converts products in place (prices to pence, sizes to stock variants, slugs), keeps users, empties carts, deletes old orders and runs `prisma db push`. Run it together with the deploy: old and new code can't read each other's data.
 
 5. **Run the development server:**
    ```bash
    npm run dev
+   ```
+   This starts Next.js and, if the [Stripe CLI](https://docs.stripe.com/stripe-cli) is installed, forwards Stripe webhooks to it in the same terminal (orders are created by the webhook after payment). It uses the test `STRIPE_SECRET_KEY` from `.env`, so no `stripe login` is needed, and passes the CLI's webhook secret to Next.js automatically. Use `npm run dev:next` to start Next.js alone.
 
 After completing these steps, your application will be accessible at http://localhost:3000/.
 

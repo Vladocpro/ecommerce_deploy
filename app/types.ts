@@ -1,58 +1,44 @@
-export type User = {
-   id:            string,
-   email?:         string,
-   password?:      string,
-   orders:        string[],
-   role:          string,
-   favorites:     Product[],
-   cart:          Product[],
-   createdAt:     Date,
-   updatedAt:     Date,
+import type {CartItem, Category, Gender, Prisma, Role} from "@prisma/client";
+
+// Database types come from the Prisma schema, so they can't drift from it.
+// Type-only imports: safe to use in client components.
+export type {Address, CartItem, Category, Gender, Order, OrderItem, OrderStatus, ProductImage, ProductVariant, Role} from "@prisma/client";
+
+// A product as the pages use it: with its sizes and stock
+export type Product = Prisma.ProductGetPayload<{include: {variants: true}}>
+
+// One line on the cart page: the stored CartItem joined with current product data
+export type CartLine = {
+   variantId: string,
+   size: string,
+   stock: number,
+   quantity: number,
+   product: Product,
 }
 
-export type Product = {
-   id          :string,
-   title       :string,
-   description :string,
-   price       :number
-   sizes       :{title: string, quantity: number}[],
-   images      :string[],
-   category    :String,
-   gender      :string,
-   sale        :number,
-   quantity?   :number,
-   size?       :number
+// The current user as returned by getCurrentUser(): safe to pass to client components
+export type User = {
+   id:     string,
+   name:   string | null,
+   email:  string | null,
+   image:  string | null,
+   role:   Role,
+   cart:   CartItem[],
 }
-export type Order = {
-   id              :String
-   tracking_number :String
-   userId          :String
-   paymentIntent   :String
-   sessionId       :String
-   currency        :String
-   customerName    :String
-   customerEmail   :String
-   items           :any[]
-   amountSubtotal  :number
-   shipping        :number
-   amountTotal     :number
-   date            :String
-}
+
 export type LoginForm = {
    email: string,
    password: string,
    repPassword: string
 }
-export type Auth = {
-   email: string,
-   password: string,
-}
+
 export type IFiltersState = {
-   sortBy: string |null,
-   search: string |null,
+   sortBy: string | null,
+   search: string | null,
    sale: boolean,
    price: string[],
-   category: string[],
-   gender: string[],
+   category: Category[],
+   gender: Gender[],
    sizes: string[],
+   page: number,
 };

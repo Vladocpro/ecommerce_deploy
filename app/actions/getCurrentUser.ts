@@ -1,63 +1,35 @@
+import { cache } from "react";
 import { getServerSession } from "next-auth/next"
 
 import { authOptions } from "../../pages/api/auth/[...nextauth]";
 import prisma from "../../lib/prismadb";
-import {User} from "../types";
+import { User } from "../types";
 
 export async function getSession() {
    return await getServerSession(authOptions)
 }
 
-export default async function getCurrentUser() {
+// Wrapped in cache() because the header and the page both call this during one
+// render; the database is only queried once per request.
+const getCurrentUser = cache(async (): Promise<User | null> => {
    try {
       const session = await getSession();
-
-      if (!session?.user?.email) {
+      // Sessions issued before the user id was stored in the token only have an email
+      const where = session?.user?.id ? { id: session.user.id }
+          : session?.user?.email ? { email: session.user.email }
+          : null;
+      if (!where) {
          return null;
       }
 
-      // @ts-ignore
-      const currentUser: User  = await prisma.user.findUnique({
-         where: {
-            email: session.user.email as string,
-         }
+      // The result goes to client components, so the password hash is never selected
+      return await prisma.user.findUnique({
+         where,
+         select: { id: true, name: true, email: true, image: true, role: true, cart: true }
       });
-
-      if (!currentUser) {
-         return null;
-      }
-
-      return {
-         ...currentUser,
-         createdAt: currentUser.createdAt.toISOString(),
-         updatedAt: currentUser.updatedAt.toISOString(),
-      };
    } catch (error: any) {
       return null;
    }
-}
+});
 
-export async function getUserFavorites() {
-   try {
-      const session = await getSession();
-
-      if (!session?.user?.email) {
-         return null;
-      }
-
-      // @ts-ignore
-      const currentUser: User  = await prisma.user.findUnique({
-         where: {
-            email: session.user.email as string,
-         }
-      });
-
-      if (!currentUser) {
-         return null;
-      }
-
-      return currentUser.favorites
-   } catch (error: any) {
-      return null;
-   }
-}
+export default getCurrentUser;

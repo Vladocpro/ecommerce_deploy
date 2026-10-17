@@ -1,41 +1,42 @@
 import getCurrentUser from "./getCurrentUser";
-import {Order} from "../types";
 import prisma from "./../../lib/prismadb";
+import {fulfillCheckout} from "../../lib/fulfillCheckout";
 
 export async function getUserAndOrders() {
    const user = await getCurrentUser()
 
    if(user === null) return undefined
-   // @ts-ignore
-   const orders: Order[] = await prisma.order.findMany({
+   const orders = await prisma.order.findMany({
       where: {
          userId: user.id
-      }
+      },
+      orderBy: {createdAt: "desc"}
    });
    return {
       user,
-      orders: orders.reverse()
+      orders
    }
 }
 
-export async function getUserAndOrder(sessionId : string) {
+export async function getUserAndOrder(sessionId : string | undefined) {
    const user = await getCurrentUser()
 
    if(user === null) return undefined
-   if(typeof sessionId !== "string") return {error: "Access Denied"}
+   if(typeof sessionId !== "string" || !sessionId.startsWith("cs_")) return {error: "Access Denied"}
 
-   const order = await prisma.order.findUnique({
-      where: {
-         // @ts-ignore
-         sessionId: sessionId,
+   try {
+      // Stripe often redirects here before the webhook arrives, so create the order now if needed
+      const order = await fulfillCheckout(sessionId)
+      if(order === null) return {pending: true}
+      if(user.id !== order.userId) {
+         return {error: "Access Denied, log into your account"}
       }
-   })
-   if(user.id !== order?.userId) {
-      return {error: "Access Denied, log into your account"}
-
-   }
-   return {
-      user,
-      order
+      return {
+         user,
+         order
+      }
+   } catch (error) {
+      console.error(error)
+      return {error: "Access Denied"}
    }
 }
